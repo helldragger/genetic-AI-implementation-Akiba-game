@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The main modes &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The command-line user interface" href="commandline.html" />
+    <link rel="prev" title="The rules" href="rules.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="commandline.html" title="The command-line user interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rules.html" title="The rules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-main-modes">
+<h1>The main modes<a class="headerlink" href="#the-main-modes" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="#selec"><span class="std std-ref">The mode selection</span></a></li>
+<li><a class="reference internal" href="#cmd"><span class="std std-ref">The command-line mode</span></a></li>
+<li><a class="reference internal" href="#gui"><span class="std std-ref">The GUI mode</span></a></li>
+<li><a class="reference internal" href="#train"><span class="std std-ref">The training mode</span></a></li>
+</ul>
+<div class="section" id="the-mode-selection">
+<span id="selec"></span><h2>The mode selection<a class="headerlink" href="#the-mode-selection" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-launcher">
+<h3>The launcher<a class="headerlink" href="#the-launcher" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="bin.interface.menu.MainMenu">
+<em class="property">class </em><code class="descclassname">bin.interface.menu.</code><code class="descname">MainMenu</code><a class="reference internal" href="_modules/bin/interface/menu.html#MainMenu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.menu.MainMenu" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bin.interface.menu.MainMenu.cmd">
+<code class="descname">cmd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/menu.html#MainMenu.cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.menu.MainMenu.cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the mode the user choose as command line mode and launch the corresponding arg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.interface.menu.MainMenu.gui">
+<code class="descname">gui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/menu.html#MainMenu.gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.menu.MainMenu.gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the mode the user choose as GUI mode and launch the corresponding arg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.interface.menu.MainMenu.set_args">
+<code class="descname">set_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/menu.html#MainMenu.set_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.menu.MainMenu.set_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the args passed through the mode specific config panels</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.interface.menu.MainMenu.training">
+<code class="descname">training</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/menu.html#MainMenu.training"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.menu.MainMenu.training" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the mode the user choose as AI training mode and launch the corresponding arg</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="the-configuration-panels">
+<h3>The configuration panels<a class="headerlink" href="#the-configuration-panels" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="bin.interface.config.config.Config">
+<em class="property">class </em><code class="descclassname">bin.interface.config.config.</code><code class="descname">Config</code><span class="sig-paren">(</span><em>mode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/config.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.config.Config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="bin.interface.config.game.GameSettings">
+<em class="property">class </em><code class="descclassname">bin.interface.config.game.</code><code class="descname">GameSettings</code><span class="sig-paren">(</span><em>master</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/game.html#GameSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.game.GameSettings" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bin.interface.config.game.GameSettings.set_result">
+<code class="descname">set_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/game.html#GameSettings.set_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.game.GameSettings.set_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the final configuration into the args format used by the main program</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.interface.config.game.GameSettings.update_diff_choice">
+<code class="descname">update_diff_choice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/game.html#GameSettings.update_diff_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.game.GameSettings.update_diff_choice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dis/enable the difficulty choice when the IA mode is toggled Off/On respectively</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.interface.config.game.GameSettings.update_gen_choice">
+<code class="descname">update_gen_choice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/game.html#GameSettings.update_gen_choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.game.GameSettings.update_gen_choice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the selected IA genome based on the difficulty choosed</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bin.interface.config.training.TrainingSettings">
+<em class="property">class </em><code class="descclassname">bin.interface.config.training.</code><code class="descname">TrainingSettings</code><span class="sig-paren">(</span><em>master</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/training.html#TrainingSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.training.TrainingSettings" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bin.interface.config.training.TrainingSettings.set_gen_results">
+<code class="descname">set_gen_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/training.html#TrainingSettings.set_gen_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.training.TrainingSettings.set_gen_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify the usability of the entered gen strings and correct them as empty if needed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.interface.config.training.TrainingSettings.set_result">
+<code class="descname">set_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/interface/config/training.html#TrainingSettings.set_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.interface.config.training.TrainingSettings.set_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the final configuration into the args format used by the main program</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-bin.akibo">
+<span id="the-command-line-mode"></span><span id="cmd"></span><h2>The command-line mode<a class="headerlink" href="#module-bin.akibo" title="Permalink to this headline">¶</a></h2>
+<p>Last layer of abstraction, the coordination: the main loop</p>
+<dl class="function">
+<dt id="bin.akibo.command_line_mode">
+<code class="descclassname">bin.akibo.</code><code class="descname">command_line_mode</code><span class="sig-paren">(</span><em>adv_is_bot</em>, <em>adv_genome</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/akibo.html#command_line_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.akibo.command_line_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the command-line mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>adv_is_bot</strong> &#8211; determines if p2 is human (class Player) or a bot (Player subclass bot.AI)</li>
+<li><strong>adv_genome</strong> &#8211; if p2 is a bot, adv_genome contains the bot&#8217;s genome</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bin.akibo">
+<span id="the-graphical-user-interface-mode"></span><span id="gui"></span><h2>The Graphical User Interface mode<a class="headerlink" href="#module-bin.akibo" title="Permalink to this headline">¶</a></h2>
+<p>Last layer of abstraction, the coordination: the main loop</p>
+<dl class="function">
+<dt id="bin.akibo.gui_mode">
+<code class="descclassname">bin.akibo.</code><code class="descname">gui_mode</code><span class="sig-paren">(</span><em>adv_is_bot</em>, <em>adv_genome</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/akibo.html#gui_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.akibo.gui_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the gui mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>adv_is_bot</strong> &#8211; determines if p2 is human (class Player) or a bot (Player subclass bot.AI)</li>
+<li><strong>adv_genome</strong> &#8211; if p2 is a bot, adv_genome contains the bot&#8217;s genome</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bin.akibo">
+<span id="the-training-mode"></span><span id="train"></span><h2>The training mode<a class="headerlink" href="#module-bin.akibo" title="Permalink to this headline">¶</a></h2>
+<p>Last layer of abstraction, the coordination: the main loop</p>
+<dl class="function">
+<dt id="bin.akibo.training_mode">
+<code class="descclassname">bin.akibo.</code><code class="descname">training_mode</code><span class="sig-paren">(</span><em>max_pop</em>, <em>iterations</em>, <em>graphs</em>, <em>verbose</em>, <em>p1_gen</em>, <em>p2_gen</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/akibo.html#training_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.akibo.training_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the training mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>max_pop</strong> &#8211; the maximum size of the population</li>
+<li><strong>iterations</strong> &#8211; the maximum number of generations</li>
+<li><strong>graphs</strong> &#8211; if we must display graphs on the fly or not</li>
+<li><strong>verbose</strong> &#8211; if we must display generation progression or not in the console</li>
+<li><strong>p1_gen</strong> &#8211; if not empty, contains a custom first parent genome</li>
+<li><strong>p2_gen</strong> &#8211; if not empty, contains a custom second parent genome</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The main modes</a><ul>
+<li><a class="reference internal" href="#the-mode-selection">The mode selection</a><ul>
+<li><a class="reference internal" href="#the-launcher">The launcher</a></li>
+<li><a class="reference internal" href="#the-configuration-panels">The configuration panels</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-bin.akibo">The command-line mode</a></li>
+<li><a class="reference internal" href="#module-bin.akibo">The Graphical User Interface mode</a></li>
+<li><a class="reference internal" href="#module-bin.akibo">The training mode</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rules.html"
+                        title="previous chapter">The rules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="commandline.html"
+                        title="next chapter">The command-line user interface</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modes.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="commandline.html" title="The command-line user interface"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rules.html" title="The rules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

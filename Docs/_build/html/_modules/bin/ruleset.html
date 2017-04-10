@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.ruleset &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.ruleset</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;First layer of abstraction concerning the game state: the rule set&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">bin.output</span> <span class="k">as</span> <span class="nn">o</span>
+
+
+<div class="viewcode-block" id="who_won"><a class="viewcode-back" href="../../rules.html#bin.ruleset.who_won">[docs]</a><span class="k">def</span> <span class="nf">who_won</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns who won if any</span>
+
+<span class="sd">    :param g: the current game</span>
+<span class="sd">    :return: the player who won if any</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">g</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;p1&#39;</span>
+    <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">g</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;p2&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="has_ended"><a class="viewcode-back" href="../../rules.html#bin.ruleset.has_ended">[docs]</a><span class="k">def</span> <span class="nf">has_ended</span><span class="p">(</span><span class="n">game</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns if the game has been won by any of the two players or the turn timeout has been reached</span>
+
+<span class="sd">    :param game: the current game</span>
+<span class="sd">    :return: if it has ended or not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">get_turn_count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="can_move"><a class="viewcode-back" href="../../rules.html#bin.ruleset.can_move">[docs]</a><span class="k">def</span> <span class="nf">can_move</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">last_moves</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines if the movement is possible</span>
+
+<span class="sd">    :param last_moves: the list of last moves, might be useless</span>
+<span class="sd">    :param g: the current game</span>
+<span class="sd">    :param p: the player</span>
+<span class="sd">    :param x: the X coordinate of the ball</span>
+<span class="sd">    :param y: the Y coordinate of the ball</span>
+<span class="sd">    :param d: the direction of the move</span>
+<span class="sd">    :param verbose: enable debug output or not</span>
+<span class="sd">    :return: The right to move or not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;There is no ball here.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;This ball doesn&#39;t belong to you!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">up</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">)</span>
+    <span class="n">move</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="c1"># # Si c&#39;est la meme boule que la derniere survivante du dernier mouvement</span>
+    <span class="c1"># # Si la commande est de repartir en sens inverse, alors non.</span>
+    <span class="c1"># TODO Determines if necessary or useless</span>
+    <span class="k">if</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">last_moves</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t repeat this move.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># espace suffisant ?</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s1">&#39;There is a ball in your way&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s1">&#39;There is a ball in your way&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s1">&#39;There is a ball in your way&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s1">&#39;There is a ball in your way&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># sortie de bille alliée</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">right</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">ball_chain</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">get_ball_chain</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">decalage</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ball_chain</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">last_ball_x</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">last_ball_y</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+        <span class="n">last_ball_x</span> <span class="o">+=</span> <span class="n">decalage</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span><span class="p">:</span>
+        <span class="n">last_ball_x</span> <span class="o">-=</span> <span class="n">decalage</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span><span class="p">:</span>
+        <span class="n">last_ball_y</span> <span class="o">+=</span> <span class="n">decalage</span>
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span><span class="p">:</span>
+        <span class="n">last_ball_y</span> <span class="o">-=</span> <span class="n">decalage</span>
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="n">last_ball_x</span><span class="p">,</span> <span class="n">last_ball_y</span><span class="p">)</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">right</span> <span class="ow">and</span> <span class="n">last_ball_x</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span> <span class="ow">and</span> <span class="n">last_ball_x</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span> <span class="ow">and</span> <span class="n">last_ball_y</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span> <span class="ow">and</span> <span class="n">last_ball_y</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;You can&#39;t eliminate a ball of yours&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="get_eliminated"><a class="viewcode-back" href="../../rules.html#bin.ruleset.get_eliminated">[docs]</a><span class="k">def</span> <span class="nf">get_eliminated</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the ball who will be eliminated by the next move</span>
+
+<span class="sd">    :param g: the current game</span>
+<span class="sd">    :param x: the X coordinate of the first pushed ball</span>
+<span class="sd">    :param y: the Y coordinate of the first pushed ball</span>
+<span class="sd">    :param d: the direction of the movement</span>
+<span class="sd">    :return: the last ball of the chain who will also be the one eliminated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">get_ball_chain</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.output &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.output</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Second layer of abstraction, the interactivity: the output&quot;&quot;&quot;</span>
+
+<span class="n">ERR_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;ERR &quot;</span>
+<span class="n">INF_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;INF &quot;</span>
+
+
+<span class="c1"># ####FORMATTING DATA#####</span>
+
+<div class="viewcode-block" id="format_ball"><a class="viewcode-back" href="../../commandline.html#bin.output.format_ball">[docs]</a><span class="k">def</span> <span class="nf">format_ball</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format the game ball owner into a specific string</span>
+
+<span class="sd">    :param value: the owner of the ball if any</span>
+<span class="sd">    :return: a string of the forementioned ball</span>
+
+<span class="sd">    &gt;&gt;&gt; format_ball(&#39;p1&#39;)</span>
+<span class="sd">     p1</span>
+
+<span class="sd">    &gt;&gt;&gt; format_ball(&#39;p2&#39;)</span>
+<span class="sd">     p2</span>
+
+<span class="sd">    &gt;&gt;&gt; format_ball(&#39;red&#39;)</span>
+<span class="sd">     re</span>
+
+<span class="sd">    &gt;&gt;&gt; format_ball(&#39;yolo&#39;)</span>
+<span class="sd">     --</span>
+
+<span class="sd">    &gt;&gt;&gt; format_ball(None)</span>
+<span class="sd">     --</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; -- &#39;</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;p1&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; p1 &#39;</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;p2&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; p2 &#39;</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; re &#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; -- &#39;</span></div>
+
+
+<div class="viewcode-block" id="format_game"><a class="viewcode-back" href="../../commandline.html#bin.output.format_game">[docs]</a><span class="k">def</span> <span class="nf">format_game</span><span class="p">(</span><span class="n">game</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format the game into a printable string</span>
+
+<span class="sd">    :return: the formatted string to print</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">formatted_game</span> <span class="o">=</span> <span class="s2">&quot;y</span><span class="se">\\</span><span class="s2">x</span><span class="se">\t\t</span><span class="s2">  0 </span><span class="se">\t</span><span class="s2">  1 </span><span class="se">\t</span><span class="s2">  2 </span><span class="se">\t</span><span class="s2">  3 </span><span class="se">\t</span><span class="s2">  4 </span><span class="se">\t</span><span class="s2">  5 </span><span class="se">\t</span><span class="s2">  6 &quot;</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="n">formatted_game</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">formatted_game</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+            <span class="n">formatted_game</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">formatted_game</span><span class="p">,</span> <span class="n">format_ball</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))])</span>
+    <span class="k">return</span> <span class="n">formatted_game</span></div>
+
+
+<div class="viewcode-block" id="format_error"><a class="viewcode-back" href="../../commandline.html#bin.output.format_error">[docs]</a><span class="k">def</span> <span class="nf">format_error</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a red color to error messages</span>
+
+<span class="sd">    :param error: the raw error</span>
+<span class="sd">    :return: the coloured error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[93m&#39;</span> <span class="o">+</span> <span class="n">error</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span></div>
+
+
+<div class="viewcode-block" id="format_info"><a class="viewcode-back" href="../../commandline.html#bin.output.format_info">[docs]</a><span class="k">def</span> <span class="nf">format_info</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a green color to info messages</span>
+
+<span class="sd">    :param info: the raw info</span>
+<span class="sd">    :return: the coloured info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[92m&#39;</span> <span class="o">+</span> <span class="n">info</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span></div>
+
+
+<span class="c1"># ####PRINTING DATA#####</span>
+
+<div class="viewcode-block" id="print_error"><a class="viewcode-back" href="../../commandline.html#bin.output.print_error">[docs]</a><span class="k">def</span> <span class="nf">print_error</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints a coloured console error</span>
+
+<span class="sd">    :param error: the raw error to print</span>
+
+<span class="sd">    &gt;&gt;&gt; print_error(&#39;error&#39;)</span>
+<span class="sd">    ERR  &gt; error</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">ERR_PREFIX</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">format_error</span><span class="p">(</span><span class="n">ERR_PREFIX</span> <span class="o">+</span> <span class="s2">&quot; &gt; &quot;</span> <span class="o">+</span> <span class="n">error</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="print_info"><a class="viewcode-back" href="../../commandline.html#bin.output.print_info">[docs]</a><span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints a coloured console info</span>
+
+<span class="sd">    :param info: the raw info to print</span>
+
+<span class="sd">    &gt;&gt;&gt; print_info(&#39;information&#39;)</span>
+<span class="sd">    INF  &gt; information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">INF_PREFIX</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">format_error</span><span class="p">(</span><span class="n">INF_PREFIX</span> <span class="o">+</span> <span class="s2">&quot; &gt; &quot;</span> <span class="o">+</span> <span class="n">info</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="print_game"><a class="viewcode-back" href="../../commandline.html#bin.output.print_game">[docs]</a><span class="k">def</span> <span class="nf">print_game</span><span class="p">(</span><span class="n">game</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints the game state to the console</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">format_game</span><span class="p">(</span><span class="n">game</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

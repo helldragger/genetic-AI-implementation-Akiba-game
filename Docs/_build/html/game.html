@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The akiba game implementation &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The rules" href="rules.html" />
+    <link rel="prev" title="The akiba’s game documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rules.html" title="The rules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="The akiba’s game documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-akiba-game-implementation">
+<h1>The akiba game implementation<a class="headerlink" href="#the-akiba-game-implementation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-bin.game">
+<span id="the-main-loop"></span><h2>The main loop<a class="headerlink" href="#module-bin.game" title="Permalink to this headline">¶</a></h2>
+<p>Hard coded moves, no abstraction, no rules, the hard layer.</p>
+<dl class="function">
+<dt id="bin.game.new_data">
+<code class="descclassname">bin.game.</code><code class="descname">new_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#new_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.new_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a new plateau to play on</p>
+</dd></dl>
+
+</div>
+<div class="section" id="the-game-mechanics">
+<h2>The game mechanics<a class="headerlink" href="#the-game-mechanics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bin.game.Game">
+<em class="property">class </em><code class="descclassname">bin.game.</code><code class="descname">Game</code><span class="sig-paren">(</span><em>data=None</em>, <em>players=None</em>, <em>p1=None</em>, <em>p2=None</em>, <em>curr_p='p1'</em>, <em>turn_c=0</em>, <em>ball_c=None</em>, <em>red_c=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bin.game.Game.can_reach">
+<code class="descname">can_reach</code><span class="sig-paren">(</span><em>xs</em>, <em>ys</em>, <em>xt</em>, <em>yt</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.can_reach"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.can_reach" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if there is a continuity of balls between two balls</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xs</strong> &#8211; source ball x coordinate</li>
+<li><strong>ys</strong> &#8211; source ball y coordinate</li>
+<li><strong>xt</strong> &#8211; target ball x coordinate</li>
+<li><strong>yt</strong> &#8211; target ball y coordinate</li>
+<li><strong>d</strong> &#8211; the direction of the move</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">if it is possible</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">can_reach</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">can_reach</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">can_reach</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a real modifiable and independent copy of this game object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a deep copy of this game instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.disable_verbose">
+<code class="descname">disable_verbose</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.disable_verbose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.disable_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable command line output for this game</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.enable_verbose">
+<code class="descname">enable_verbose</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.enable_verbose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.enable_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable command line output for this game</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_ball_chain">
+<code class="descname">get_ball_chain</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_ball_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_ball_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ordered list of balls affected by the movement from the closer to the farther</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; the x coordinate at the beginning</li>
+<li><strong>y</strong> &#8211; the y coordinate at the beginning</li>
+<li><strong>d</strong> &#8211; the direction of the movement</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of balls ownerships affected by the movement</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_ball_chain</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="go">[&#39;p1&#39;,&#39;p1&#39;]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_ball_chain</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="go">[&#39;p1&#39;]</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_ball_chain</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_game">
+<code class="descname">get_game</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the state of the game</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a copy of the game data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_owner">
+<code class="descname">get_owner</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_owner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ownership of the corresponding coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; the x coordinate to look at</li>
+<li><strong>y</strong> &#8211; the y coordinate to look at</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the ownership of this case</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;p1&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">&#39;red&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">&#39;p2&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_player">
+<code class="descname">get_player</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_player" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the corresponding player data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; the name of the player</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the player data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_player_balls">
+<code class="descname">get_player_balls</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_player_balls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_player_balls" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the list of named player position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; the name of the player</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">his balls position</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_red_balls">
+<code class="descname">get_red_balls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_red_balls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_red_balls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of red balls positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the red balls positions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.get_turn_count">
+<code class="descname">get_turn_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.get_turn_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.get_turn_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of turns played during this game</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of turns played during this game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.has_ball">
+<code class="descname">has_ball</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.has_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.has_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if there is an ownership on a case or not</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> &#8211; the x coordinate of the case</li>
+<li><strong>y</strong> &#8211; the y coordinate of the case</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">if it does belong to someone</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">..</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;p1&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">&#39;red&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">has_ball</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&#39;p2&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves a ball in the wanted direction if possible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; the X coordinate of the ball to move</li>
+<li><strong>y</strong> &#8211; the Y coordinate of the ball to move</li>
+<li><strong>d</strong> &#8211; The direction of the movement</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.move_ball">
+<code class="descname">move_ball</code><span class="sig-paren">(</span><em>player</em>, <em>old_pos</em>, <em>new_pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.move_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.move_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves a ball from the old pos to the new_pos</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>player</strong> &#8211; the owner of the ball</li>
+<li><strong>new_pos</strong> &#8211; the new position</li>
+<li><strong>old_pos</strong> &#8211; the old position</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.new_game">
+<code class="descname">new_game</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.new_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.new_game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a new plateau to play on</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.player_balls_left">
+<code class="descname">player_balls_left</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.player_balls_left"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.player_balls_left" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the amount of balls remaining for player p</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> &#8211; the player</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the amount of ball remaining for the player</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+<span class="go">8</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.red_balls_count">
+<code class="descname">red_balls_count</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.red_balls_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.red_balls_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the amount of red balls the player has eliminated during the game</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> &#8211; the player</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the amount of red balls the player has eliminated</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.red_balls_left">
+<code class="descname">red_balls_left</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.red_balls_left"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.red_balls_left" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the amount of red balls remaining</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of red balls remaining</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">game</span><span class="o">=</span><span class="n">Game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">();</span><span class="n">game</span><span class="o">.</span><span class="n">red_balls_left</span><span class="p">()</span>
+<span class="go">13</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.remove_ball">
+<code class="descname">remove_ball</code><span class="sig-paren">(</span><em>owner</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.remove_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.remove_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the specified ball from the game and player&#8217;s index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>owner</strong> &#8211; the owner of the ball</li>
+<li><strong>pos</strong> &#8211; the position (x,y) of the ball</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lets the game run itself until completion</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the final state of the game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.update_turn">
+<code class="descname">update_turn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.update_turn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.update_turn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the next player to have to play and the amount of turns played</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.game.Game.who_plays">
+<code class="descname">who_plays</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/game.html#Game.who_plays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.game.Game.who_plays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whose player have to play next</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">next player</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The akiba game implementation</a><ul>
+<li><a class="reference internal" href="#module-bin.game">The main loop</a></li>
+<li><a class="reference internal" href="#the-game-mechanics">The game mechanics</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">The akiba&#8217;s game documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="rules.html"
+                        title="next chapter">The rules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/game.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rules.html" title="The rules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="The akiba’s game documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

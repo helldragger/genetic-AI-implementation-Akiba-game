@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.AI.heuristics &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.AI.heuristics</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">AI Data computation layer</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">bin.ruleset</span> <span class="k">as</span> <span class="nn">rs</span>
+<span class="kn">import</span> <span class="nn">bin.AI.graph.connexity</span> <span class="k">as</span> <span class="nn">cx</span>
+
+
+<div class="viewcode-block" id="heuristic"><a class="viewcode-back" href="../../../heuristics.html#bin.AI.heuristics.heuristic">[docs]</a><span class="k">def</span> <span class="nf">heuristic</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">genome_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the node fitness using it&#39;s set of data</span>
+
+<span class="sd">    winning conditions (+999):</span>
+
+<span class="sd">      - victoire par les rouges</span>
+<span class="sd">      - victoire par elimination</span>
+
+<span class="sd">    losing conditions (-999):</span>
+
+<span class="sd">      - Defaite par elimination</span>
+<span class="sd">      - Defaite par les rouges</span>
+
+<span class="sd">    others conditions ([0; 31]):</span>
+
+<span class="sd">      - Sur-nombre de boules du joueur</span>
+<span class="sd">      - Minimum de dispersion des boules du joueur</span>
+<span class="sd">      - Maximum de dispersion des boules adverses</span>
+<span class="sd">      - Distance moyenne de centre minimale</span>
+<span class="sd">      - Peut eliminer des boules rouges ou adverses</span>
+
+
+<span class="sd">    :param game: the node game</span>
+<span class="sd">    :param genome_data: The AI genome data parsed</span>
+<span class="sd">    :return: the fitness score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Variables and multipliers initialization</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">who_plays</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;p1&#39;</span><span class="p">:</span>
+        <span class="n">pla_left</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+        <span class="n">pla_red</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+        <span class="n">adv_left</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+        <span class="n">adv_red</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pla_left</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+        <span class="n">pla_red</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+        <span class="n">adv_left</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+        <span class="n">adv_red</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+
+    <span class="n">mult_pla_left</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;pla balls left&#39;</span><span class="p">]</span>
+    <span class="n">mult_adv_left</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;adv balls left&#39;</span><span class="p">]</span>
+    <span class="n">mult_pla_red</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;pla red balls&#39;</span><span class="p">]</span>
+    <span class="n">mult_adv_red</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;adv red balls&#39;</span><span class="p">]</span>
+
+    <span class="n">mean_dist_from_center</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mult_dist</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>
+
+    <span class="n">last_adv</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">adv_left</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
+
+    <span class="n">last_pla_red</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">pla_red</span> <span class="o">==</span> <span class="mi">5</span> <span class="k">else</span> <span class="kc">False</span>
+
+    <span class="n">can_adv</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mult_elim_adv</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;can elim adv&#39;</span><span class="p">]</span>
+
+    <span class="n">can_red</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mult_elim_red</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;can elim red&#39;</span><span class="p">]</span>
+
+    <span class="n">pla_grps</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">get_number_of_groups</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">get_player_balls</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get_name</span><span class="p">()))</span>
+    <span class="n">mult_pla_grps</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;pla group left&#39;</span><span class="p">]</span>
+
+    <span class="n">adv_grps</span> <span class="o">=</span> <span class="n">cx</span><span class="o">.</span><span class="n">get_number_of_groups</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">get_player_balls</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="s1">&#39;p2&#39;</span> <span class="k">else</span> <span class="s1">&#39;p2&#39;</span><span class="p">))</span>
+    <span class="n">mult_adv_grps</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;adv group left&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">ball</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">get_player_balls</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get_name</span><span class="p">()):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ball</span>
+        <span class="n">mean_dist_from_center</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">4</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">4</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rs</span><span class="o">.</span><span class="n">can_move</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">get_last_moves</span><span class="p">()):</span>
+                <span class="n">eliminated</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">get_eliminated</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">eliminated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">eliminated</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
+                        <span class="n">can_red</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">can_adv</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">mean_dist_from_center</span> <span class="o">/=</span> <span class="n">pla_left</span> <span class="k">if</span> <span class="n">pla_left</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="c1"># winning conditions</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">last_pla_red</span> <span class="ow">and</span> <span class="n">can_red</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">last_adv</span> <span class="ow">and</span> <span class="n">can_adv</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="n">adv_grps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">999</span>
+
+    <span class="c1"># losing conditions</span>
+    <span class="k">if</span> <span class="n">pla_left</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">adv_red</span> <span class="o">==</span> <span class="mi">6</span> <span class="ow">or</span> <span class="n">pla_grps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">999</span>
+
+    <span class="c1"># Proportional conditions</span>
+    <span class="c1"># # Adverse status:</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">adv_left</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span> <span class="o">*</span> <span class="n">mult_adv_left</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">adv_red</span> <span class="o">/</span> <span class="mi">5</span><span class="p">))</span> <span class="o">*</span> <span class="n">mult_adv_red</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">adv_grps</span><span class="o">/</span><span class="n">adv_left</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult_adv_grps</span>
+    <span class="c1"># # Player status:</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pla_left</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult_pla_left</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pla_red</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult_pla_red</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">pla_grps</span><span class="o">/</span><span class="n">pla_left</span><span class="p">))</span> <span class="o">*</span> <span class="n">mult_pla_grps</span>
+    <span class="c1"># # Distance status:</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">mean_dist_from_center</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mf">0.5</span><span class="p">))))</span> <span class="o">*</span> <span class="n">mult_dist</span>
+    <span class="c1"># # Elimination status:</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">can_adv</span><span class="o">/</span><span class="n">adv_left</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult_elim_adv</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">can_red</span><span class="o">/</span><span class="p">(</span><span class="mi">6</span><span class="o">-</span><span class="n">pla_red</span><span class="p">))</span><span class="o">*</span><span class="n">mult_elim_red</span>
+
+    <span class="c1"># Ratio conditions</span>
+    <span class="c1"># # Balls left ratio:</span>
+    <span class="n">mult_ball_ratio</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;balls ratio&#39;</span><span class="p">]</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pla_left</span><span class="o">/</span><span class="n">adv_left</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult_ball_ratio</span>
+    <span class="c1"># # Ball groups ratio:</span>
+    <span class="n">mult_grps_ratio</span> <span class="o">=</span> <span class="n">genome_data</span><span class="p">[</span><span class="s1">&#39;group ratio&#39;</span><span class="p">]</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pla_grps</span><span class="o">/</span><span class="n">adv_grps</span><span class="p">)</span> <span class="o">*</span> <span class="n">mult_grps_ratio</span>
+
+    <span class="k">return</span> <span class="n">score</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

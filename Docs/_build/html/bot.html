@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The players classes &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="The decision making and heuristics" href="heuristics.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="heuristics.html" title="The decision making and heuristics"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-players-classes">
+<h1>The players classes<a class="headerlink" href="#the-players-classes" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="#player"><span class="std std-ref">class Player</span></a></li>
+<li><a class="reference internal" href="#ai"><span class="std std-ref">Player subclass: class bot.AI</span></a></li>
+</ul>
+<div class="section" id="module-bin.player">
+<span id="the-player-class"></span><span id="player"></span><h2>The player class<a class="headerlink" href="#module-bin.player" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bin.player.Player">
+<em class="property">class </em><code class="descclassname">bin.player.</code><code class="descname">Player</code><a class="reference internal" href="_modules/bin/player.html#Player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bin.player.Player.get_last_moves">
+<code class="descname">get_last_moves</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.get_last_moves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.get_last_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the players last moves list (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the players last moves list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.player.Player.get_move">
+<code class="descname">get_move</code><span class="sig-paren">(</span><em>game</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.get_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.get_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks the user a move until the user returns a correct and possible move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>game</strong> &#8211; the current game object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the move issued by the player</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.player.Player.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this players name (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">this players name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.player.Player.last_move">
+<code class="descname">last_move</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.last_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.last_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the players last move (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the players last move</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.player.Player.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>role</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets this players name to the new name (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>role</strong> &#8211; the new name of the player (might be &#8216;p1&#8217;, or &#8216;p2&#8217;)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.player.Player.update_last_moves">
+<code class="descname">update_last_moves</code><span class="sig-paren">(</span><em>move</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.update_last_moves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.update_last_moves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the players last moves with the new last one (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>move</strong> &#8211; the new last move to add to the last moves queue</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.player.Player.which_player">
+<code class="descname">which_player</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/player.html#Player.which_player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.player.Player.which_player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns players own name (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the players name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bin.AI.bot">
+<span id="the-ai-subclass"></span><span id="ai"></span><h2>The AI subclass<a class="headerlink" href="#module-bin.AI.bot" title="Permalink to this headline">¶</a></h2>
+<p>Contains the Player subclass bot.AI, used to overwrite the user get_move without over-complicating the code and is
+used to define the way the AI is working</p>
+<dl class="class">
+<dt id="bin.AI.bot.AI">
+<em class="property">class </em><code class="descclassname">bin.AI.bot.</code><code class="descname">AI</code><span class="sig-paren">(</span><em>gen=''</em>, <em>identity=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bin.AI.bot.AI.calculate_score">
+<code class="descname">calculate_score</code><span class="sig-paren">(</span><em>game</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI.calculate_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI.calculate_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the definitive score of the AI in the ended game</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>game</strong> &#8211; the current game</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.AI.bot.AI.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of itself</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a copy of itself</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.AI.bot.AI.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this AI identity (might be a depreciated feature soon)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">this AI identity</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.AI.bot.AI.get_move">
+<code class="descname">get_move</code><span class="sig-paren">(</span><em>game</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI.get_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI.get_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the game to get the best move possible in a minimal amount of time and decides it based on the AI genome</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>game</strong> &#8211; the current game</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the move decided by the AI</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.AI.bot.AI.get_score">
+<code class="descname">get_score</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI.get_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI.get_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the AI calculated final fitness score</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">this AI latest fitness score</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bin.AI.bot.AI.printable_results">
+<code class="descname">printable_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/AI/bot.html#AI.printable_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.AI.bot.AI.printable_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a readable string containing the AI final performance and it&#8217;s genome for reference</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the AI fitness score and genome in a pretty formatted string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The players classes</a><ul>
+<li><a class="reference internal" href="#module-bin.player">The player class</a></li>
+<li><a class="reference internal" href="#module-bin.AI.bot">The AI subclass</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="heuristics.html"
+                        title="previous chapter">The decision making and heuristics</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bot.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="heuristics.html" title="The decision making and heuristics"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

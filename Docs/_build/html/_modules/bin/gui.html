@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.gui &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.gui</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The third layer of abstraction, a graphical interface</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="k">import</span> <span class="n">messagebox</span>
+
+<span class="kn">import</span> <span class="nn">bin.game</span> <span class="k">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">bin.interface.background</span> <span class="k">as</span> <span class="nn">bg</span>
+<span class="kn">import</span> <span class="nn">bin.ruleset</span> <span class="k">as</span> <span class="nn">rs</span>
+<span class="kn">from</span> <span class="nn">bin.interface.command</span> <span class="k">import</span> <span class="n">CommandUI</span>
+<span class="kn">from</span> <span class="nn">bin.interface.plateau</span> <span class="k">import</span> <span class="n">Plateau</span>
+<span class="kn">from</span> <span class="nn">bin.interface.scoreboard</span> <span class="k">import</span> <span class="n">StateUI</span>
+<span class="kn">import</span> <span class="nn">bin.AI.bot</span> <span class="k">as</span> <span class="nn">bot</span>
+
+
+<div class="viewcode-block" id="GUI"><a class="viewcode-back" href="../../gui.html#bin.gui.GUI">[docs]</a><span class="k">class</span> <span class="nc">GUI</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">Tk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load up images in memory, create the main window and adds each panel, binds the main event to the game and starts it</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adv_is_bot</span><span class="p">,</span> <span class="n">adv_genome</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GUI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">bg</span><span class="o">.</span><span class="n">load_images</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">adv_is_bot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">Game</span><span class="p">(</span><span class="n">p2</span><span class="o">=</span><span class="n">bot</span><span class="o">.</span><span class="n">AI</span><span class="p">(</span><span class="n">gen</span><span class="o">=</span><span class="n">adv_genome</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">game</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">Game</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">against_bot</span> <span class="o">=</span> <span class="n">adv_is_bot</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">UI</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UI</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+        <span class="c1"># State frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_frame</span> <span class="o">=</span> <span class="n">StateUI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UI</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Game canvas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span> <span class="o">=</span> <span class="n">Plateau</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UI</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Command frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_frame</span> <span class="o">=</span> <span class="n">CommandUI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;Button-1&gt;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clicked_at</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_game</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GUI.new_game"><a class="viewcode-back" href="../../gui.html#bin.gui.GUI.new_game">[docs]</a>    <span class="k">def</span> <span class="nf">new_game</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the game and the UI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">new_game</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span><span class="o">.</span><span class="n">new_game</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_frame</span><span class="o">.</span><span class="n">reset_scoreboard</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GUI.clicked_at"><a class="viewcode-back" href="../../gui.html#bin.gui.GUI.clicked_at">[docs]</a>    <span class="k">def</span> <span class="nf">clicked_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">click</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Here, the input is processed in several steps:</span>
+
+<span class="sd">        1. Get the case with coordinates // 32.</span>
+<span class="sd">        2. Get the location of the mouse inside the case with % 32</span>
+<span class="sd">        3. Determine the Direction clicked with a little hitbox of 8x16 pixel on each side.</span>
+<span class="sd">        4. If a selector has been clicked, verify if it is activated. If not, the input is ignored</span>
+<span class="sd">        5. Else we send the input to the game</span>
+<span class="sd">        6. We update_game the game state</span>
+<span class="sd">        7. Update of the screen</span>
+<span class="sd">        8. Wait for next input!</span>
+
+<span class="sd">        :param click: The click event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">//</span> <span class="mi">32</span><span class="p">,</span> <span class="n">y</span> <span class="o">//</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">%=</span> <span class="mi">32</span>
+        <span class="n">y</span> <span class="o">%=</span> <span class="mi">32</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">8</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;l&#39;</span>
+        <span class="k">elif</span> <span class="mi">24</span> <span class="o">&gt;</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">8</span> <span class="o">&gt;</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;u&#39;</span>
+        <span class="k">elif</span> <span class="mi">8</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">24</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
+        <span class="k">elif</span> <span class="mi">32</span> <span class="o">&gt;</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">24</span> <span class="o">&gt;</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+        <span class="k">if</span> <span class="n">direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span><span class="o">.</span><span class="n">get_selector_state</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">direction</span><span class="p">):</span>
+                <span class="n">inv_dir</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span>
+                <span class="p">}</span>
+                <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">who_plays</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">inv_dir</span><span class="p">[</span><span class="n">direction</span><span class="p">])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">state_frame</span><span class="o">.</span><span class="n">update_scoreboard</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span><span class="o">.</span><span class="n">update_grid</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">rs</span><span class="o">.</span><span class="n">who_won</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="n">player</span><span class="p">:</span>
+                    <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="n">player</span> <span class="o">+</span> <span class="s2">&quot; won!&quot;</span><span class="p">,</span> <span class="n">player</span> <span class="o">+</span> <span class="s2">&quot; won in&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">get_turn_count</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot; turns!&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">new_game</span><span class="p">()</span>
+
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">against_bot</span><span class="p">:</span>
+                    <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">who_plays</span><span class="p">()</span>
+                    <span class="n">mv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="n">player</span><span class="p">)</span><span class="o">.</span><span class="n">get_move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">mv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">state_frame</span><span class="o">.</span><span class="n">update_scoreboard</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">game_canvas</span><span class="o">.</span><span class="n">update_grid</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">rs</span><span class="o">.</span><span class="n">who_won</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="n">player</span><span class="p">:</span>
+                        <span class="n">messagebox</span><span class="o">.</span><span class="n">showinfo</span><span class="p">(</span><span class="n">player</span> <span class="o">+</span> <span class="s2">&quot; won!&quot;</span><span class="p">,</span> <span class="n">player</span> <span class="o">+</span> <span class="s2">&quot; won in&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">get_turn_count</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot; turns!&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">new_game</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

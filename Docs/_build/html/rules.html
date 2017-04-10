@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The rules &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The main modes" href="modes.html" />
+    <link rel="prev" title="The akiba game implementation" href="game.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modes.html" title="The main modes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="game.html" title="The akiba game implementation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-rules">
+<h1>The rules<a class="headerlink" href="#the-rules" title="Permalink to this headline">¶</a></h1>
+<p>This game is meant to be played by two players. Each player starts with 8 balls of the same color and will need to
+eliminate either the totality of the other player balls either 6 of the red neutral ones.</p>
+<p>Every turn the player can push one of his balls, but he needs to have enough space to place his finger behind it.
+They are a few rules concerning which balls can be pushed:</p>
+<ul class="simple">
+<li>The player cannot push one of his own balls outside the plateau.</li>
+<li>The player cannot undo his opponent last move.</li>
+<li>The ball must have a blank space next to it in the opposite direction to be pushed this way.</li>
+</ul>
+<span class="target" id="module-bin.ruleset"></span><p>First layer of abstraction concerning the game state: the rule set</p>
+<dl class="function">
+<dt id="bin.ruleset.can_move">
+<code class="descclassname">bin.ruleset.</code><code class="descname">can_move</code><span class="sig-paren">(</span><em>g</em>, <em>p</em>, <em>x</em>, <em>y</em>, <em>d</em>, <em>last_moves</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/ruleset.html#can_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.ruleset.can_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if the movement is possible</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>last_moves</strong> &#8211; the list of last moves, might be useless</li>
+<li><strong>g</strong> &#8211; the current game</li>
+<li><strong>p</strong> &#8211; the player</li>
+<li><strong>x</strong> &#8211; the X coordinate of the ball</li>
+<li><strong>y</strong> &#8211; the Y coordinate of the ball</li>
+<li><strong>d</strong> &#8211; the direction of the move</li>
+<li><strong>verbose</strong> &#8211; enable debug output or not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The right to move or not</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bin.ruleset.get_eliminated">
+<code class="descclassname">bin.ruleset.</code><code class="descname">get_eliminated</code><span class="sig-paren">(</span><em>g</em>, <em>x</em>, <em>y</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/ruleset.html#get_eliminated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.ruleset.get_eliminated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ball who will be eliminated by the next move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>g</strong> &#8211; the current game</li>
+<li><strong>x</strong> &#8211; the X coordinate of the first pushed ball</li>
+<li><strong>y</strong> &#8211; the Y coordinate of the first pushed ball</li>
+<li><strong>d</strong> &#8211; the direction of the movement</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the last ball of the chain who will also be the one eliminated</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bin.ruleset.has_ended">
+<code class="descclassname">bin.ruleset.</code><code class="descname">has_ended</code><span class="sig-paren">(</span><em>game</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/ruleset.html#has_ended"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.ruleset.has_ended" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if the game has been won by any of the two players or the turn timeout has been reached</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>game</strong> &#8211; the current game</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">if it has ended or not</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bin.ruleset.who_won">
+<code class="descclassname">bin.ruleset.</code><code class="descname">who_won</code><span class="sig-paren">(</span><em>g</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bin/ruleset.html#who_won"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bin.ruleset.who_won" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns who won if any</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>g</strong> &#8211; the current game</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the player who won if any</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="game.html"
+                        title="previous chapter">The akiba game implementation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modes.html"
+                        title="next chapter">The main modes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/rules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modes.html" title="The main modes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="game.html" title="The akiba game implementation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

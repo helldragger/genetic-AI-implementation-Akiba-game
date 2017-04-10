@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.AI.negamax &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.AI.negamax</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">bin.AI.heuristics</span> <span class="k">import</span> <span class="n">heuristic</span>
+
+
+<div class="viewcode-block" id="negamax_alpha_beta"><a class="viewcode-back" href="../../../heuristics.html#bin.AI.negamax.negamax_alpha_beta">[docs]</a><span class="k">def</span> <span class="nf">negamax_alpha_beta</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">genome_data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    For each node/situation, calculate every move possible and reaction possible</span>
+
+<span class="sd">        1.  Player situation node, score is unknown</span>
+<span class="sd">        2.  List every moves possible by the player, giving the adversary an unknown reaction score</span>
+<span class="sd">        3.  List every move possible by the adversary, giving another player unknown score</span>
+
+<span class="sd">        If calculus depth is reached (max iteration):</span>
+
+<span class="sd">            1.  Calculate the fitness of every possible move by the player</span>
+
+<span class="sd">            (Assuming the adversary will play perfectly)</span>
+
+<span class="sd">            2.  Sets every possible adversary move score = -min(player_moves[0], ..., player_moves[i])</span>
+<span class="sd">            3.  Sets every possible player move score = max(-adversary_moves[0], ..., -adversary_moves[i])</span>
+
+<span class="sd">            Repeat until root situation score is set</span>
+
+<span class="sd">            4.  Returns the move corresponding to</span>
+
+<span class="sd">    :param node: the current explored node</span>
+<span class="sd">    :param depth: the current depth</span>
+<span class="sd">    :param alpha: the current node alpha</span>
+<span class="sd">    :param beta: the current node beta</span>
+<span class="sd">    :param player: who plays determine the multiplier</span>
+<span class="sd">    :param genome_data: the current node genome data</span>
+<span class="sd">    :return: the best move possible</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">move_set</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">move_set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">node</span><span class="o">.</span><span class="n">has_ended</span><span class="p">()</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">move_set</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">move</span><span class="p">,</span> <span class="n">player</span> <span class="o">*</span> <span class="n">heuristic</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">game</span><span class="p">,</span> <span class="n">genome_data</span><span class="p">)]</span>
+    <span class="n">best_score</span> <span class="o">=</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">best_move</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">move_set</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">best_move</span> <span class="o">==</span> <span class="p">():</span>
+            <span class="n">best_move</span> <span class="o">=</span> <span class="n">move</span>
+        <span class="n">child_node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_child_node</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+        <span class="n">child_result</span> <span class="o">=</span> <span class="n">negamax_alpha_beta</span><span class="p">(</span><span class="n">child_node</span><span class="p">,</span> <span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">alpha</span><span class="p">,</span> <span class="o">-</span><span class="n">beta</span><span class="p">,</span> <span class="o">-</span><span class="n">player</span><span class="p">,</span> <span class="n">genome_data</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="n">child_result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">best_score</span><span class="p">:</span>
+            <span class="n">best_score</span> <span class="o">=</span> <span class="n">score</span>
+            <span class="n">best_move</span> <span class="o">=</span> <span class="n">move</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">alpha</span> <span class="o">&gt;=</span> <span class="n">beta</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">best_move</span><span class="p">,</span> <span class="n">best_score</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

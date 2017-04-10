@@ -1,0 +1,550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.game &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.game</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Hard coded moves, no abstraction, no rules, the hard layer.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">bin.output</span> <span class="k">as</span> <span class="nn">o</span>
+<span class="kn">import</span> <span class="nn">bin.player</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">bin.ruleset</span> <span class="k">as</span> <span class="nn">rs</span>
+
+
+<div class="viewcode-block" id="new_data"><a class="viewcode-back" href="../../game.html#bin.game.new_data">[docs]</a><span class="k">def</span> <span class="nf">new_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize a new plateau to play on</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="c1"># Black balls</span>
+
+        <span class="s1">&#39;p1&#39;</span><span class="p">:</span>  <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span>
+
+        <span class="c1"># White balls</span>
+
+        <span class="s1">&#39;p2&#39;</span><span class="p">:</span>  <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+
+        <span class="c1"># Red balls</span>
+
+        <span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span>
+
+    <span class="p">}</span></div>
+
+
+<span class="c1"># INITIALIZATION</span>
+<div class="viewcode-block" id="Game"><a class="viewcode-back" href="../../game.html#bin.game.Game">[docs]</a><span class="k">class</span> <span class="nc">Game</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">players</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">p1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">p2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">curr_p</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">turn_c</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ball_c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">red_c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="k">if</span> <span class="n">ball_c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_balls_count</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;p1&#39;</span><span class="p">:</span>  <span class="mi">8</span><span class="p">,</span>
+                <span class="s1">&#39;p2&#39;</span><span class="p">:</span>  <span class="mi">8</span><span class="p">,</span>
+                <span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="mi">13</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_balls_count</span> <span class="o">=</span> <span class="n">ball_c</span>
+
+        <span class="k">if</span> <span class="n">red_c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_red_count</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;p1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s1">&#39;p2&#39;</span><span class="p">:</span> <span class="mi">0</span>
+                <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_red_count</span> <span class="o">=</span> <span class="n">red_c</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turns_count</span> <span class="o">=</span> <span class="n">turn_c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span> <span class="o">=</span> <span class="n">curr_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">players</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Player</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Player</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_players</span> <span class="o">=</span> <span class="n">players</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+<div class="viewcode-block" id="Game.enable_verbose"><a class="viewcode-back" href="../../game.html#bin.game.Game.enable_verbose">[docs]</a>    <span class="k">def</span> <span class="nf">enable_verbose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable command line output for this game</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Game.disable_verbose"><a class="viewcode-back" href="../../game.html#bin.game.Game.disable_verbose">[docs]</a>    <span class="k">def</span> <span class="nf">disable_verbose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disable command line output for this game</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Game.copy"><a class="viewcode-back" href="../../game.html#bin.game.Game.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a real modifiable and independent copy of this game object</span>
+
+<span class="sd">        :return: a deep copy of this game instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Game.new_game"><a class="viewcode-back" href="../../game.html#bin.game.Game.new_game">[docs]</a>    <span class="k">def</span> <span class="nf">new_game</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a new plateau to play on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">()</span></div>
+
+    <span class="c1"># DATA GETTERS</span>
+
+<div class="viewcode-block" id="Game.get_game"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_game">[docs]</a>    <span class="k">def</span> <span class="nf">get_game</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a copy of the state of the game</span>
+<span class="sd">    </span>
+<span class="sd">        :return: a copy of the game data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Game.get_turn_count"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_turn_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_turn_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of turns played during this game</span>
+<span class="sd">    </span>
+<span class="sd">        :return: the amount of turns played during this game</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_turns_count</span></div>
+
+<div class="viewcode-block" id="Game.who_plays"><a class="viewcode-back" href="../../game.html#bin.game.Game.who_plays">[docs]</a>    <span class="k">def</span> <span class="nf">who_plays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns whose player have to play next</span>
+<span class="sd">    </span>
+<span class="sd">        :return: next player</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span></div>
+
+<div class="viewcode-block" id="Game.update_turn"><a class="viewcode-back" href="../../game.html#bin.game.Game.update_turn">[docs]</a>    <span class="k">def</span> <span class="nf">update_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the next player to have to play and the amount of turns played</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span> <span class="o">==</span> <span class="s1">&#39;p2&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span> <span class="o">=</span> <span class="s1">&#39;p1&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_turns_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span> <span class="o">=</span> <span class="s1">&#39;p2&#39;</span></div>
+
+<div class="viewcode-block" id="Game.get_owner"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_owner">[docs]</a>    <span class="k">def</span> <span class="nf">get_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the ownership of the corresponding coordinates</span>
+<span class="sd">    </span>
+<span class="sd">        :param x: the x coordinate to look at</span>
+<span class="sd">        :param y: the y coordinate to look at</span>
+<span class="sd">        :return: the ownership of this case</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_owner(0,0)</span>
+<span class="sd">        &#39;p1&#39;</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_owner(3,3)</span>
+<span class="sd">        &#39;red&#39;</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_owner(1,2)</span>
+<span class="sd">        None</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_owner(0,5)</span>
+<span class="sd">        &#39;p2&#39;</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s1">&#39;p1&#39;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s1">&#39;p2&#39;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s1">&#39;red&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Game.get_ball_chain"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_ball_chain">[docs]</a>    <span class="k">def</span> <span class="nf">get_ball_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the ordered list of balls affected by the movement from the closer to the farther</span>
+<span class="sd">    </span>
+<span class="sd">        :param x: the x coordinate at the beginning</span>
+<span class="sd">        :param y: the y coordinate at the beginning</span>
+<span class="sd">        :param d: the direction of the movement</span>
+<span class="sd">        :return: a list of balls ownerships affected by the movement</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_ball_chain(0,0,&#39;r&#39;)</span>
+<span class="sd">        [&#39;p1&#39;,&#39;p1&#39;]</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_ball_chain(0,1,&#39;r&#39;)</span>
+<span class="sd">        [&#39;p1&#39;]</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.get_ball_chain(1,2,&#39;d&#39;)</span>
+<span class="sd">        []</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">up</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">)</span>
+        <span class="n">chain</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;p2&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]:</span>
+                    <span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">chain</span></div>
+
+<div class="viewcode-block" id="Game.player_balls_left"><a class="viewcode-back" href="../../game.html#bin.game.Game.player_balls_left">[docs]</a>    <span class="k">def</span> <span class="nf">player_balls_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the amount of balls remaining for player p</span>
+<span class="sd">    </span>
+<span class="sd">        :param p: the player</span>
+<span class="sd">        :return: the amount of ball remaining for the player</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.player_balls_left(&#39;p1&#39;)</span>
+<span class="sd">        8</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_balls_count</span><span class="p">[</span><span class="n">p</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Game.get_player"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_player">[docs]</a>    <span class="k">def</span> <span class="nf">get_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the corresponding player data</span>
+
+<span class="sd">        :param name: the name of the player</span>
+<span class="sd">        :return: the player data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Game.get_player_balls"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_player_balls">[docs]</a>    <span class="k">def</span> <span class="nf">get_player_balls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the list of named player position</span>
+
+<span class="sd">        :param name: the name of the player</span>
+<span class="sd">        :return: his balls position</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Game.get_red_balls"><a class="viewcode-back" href="../../game.html#bin.game.Game.get_red_balls">[docs]</a>    <span class="k">def</span> <span class="nf">get_red_balls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of red balls positions</span>
+
+<span class="sd">        :return: the red balls positions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Game.red_balls_left"><a class="viewcode-back" href="../../game.html#bin.game.Game.red_balls_left">[docs]</a>    <span class="k">def</span> <span class="nf">red_balls_left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the amount of red balls remaining</span>
+<span class="sd">    </span>
+<span class="sd">        :return: the amount of red balls remaining</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.red_balls_left()</span>
+<span class="sd">        13</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_balls_count</span><span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Game.red_balls_count"><a class="viewcode-back" href="../../game.html#bin.game.Game.red_balls_count">[docs]</a>    <span class="k">def</span> <span class="nf">red_balls_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the amount of red balls the player has eliminated during the game</span>
+<span class="sd">    </span>
+<span class="sd">        :param p: the player</span>
+<span class="sd">        :return: the amount of red balls the player has eliminated</span>
+<span class="sd">    </span>
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.red_balls_count(&#39;p1&#39;)</span>
+<span class="sd">        0</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_red_count</span><span class="p">[</span><span class="n">p</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Game.has_ball"><a class="viewcode-back" href="../../game.html#bin.game.Game.has_ball">[docs]</a>    <span class="k">def</span> <span class="nf">has_ball</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns if there is an ownership on a case or not</span>
+
+<span class="sd">        :param x: the x coordinate of the case</span>
+<span class="sd">        :param y: the y coordinate of the case</span>
+<span class="sd">        :return: if it does belong to someone</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game..new_game();game.has_ball(0,0)</span>
+<span class="sd">        &#39;p1&quot;</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.has_ball(4,4)</span>
+<span class="sd">        &#39;red&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.has_ball(0,3)</span>
+<span class="sd">        None</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.has_ball(6,0)</span>
+<span class="sd">        &#39;p2&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Game.can_reach"><a class="viewcode-back" href="../../game.html#bin.game.Game.can_reach">[docs]</a>    <span class="k">def</span> <span class="nf">can_reach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns if there is a continuity of balls between two balls</span>
+
+<span class="sd">        :param xs: source ball x coordinate</span>
+<span class="sd">        :param ys: source ball y coordinate</span>
+<span class="sd">        :param xt: target ball x coordinate</span>
+<span class="sd">        :param yt: target ball y coordinate</span>
+<span class="sd">        :param d: the direction of the move</span>
+<span class="sd">        :return: if it is possible</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.can_reach(0,0,0,1,&#39;d&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.can_reach(0,0,0,1,&#39;r&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; game=Game();game.new_game();game.can_reach(0,0,5,0,&#39;d&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">up</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">right</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ys</span> <span class="o">==</span> <span class="n">yt</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xt</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">down</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span><span class="p">)</span> <span class="ow">and</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">xt</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">yt</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">yt</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">yi</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="c1"># MECHANICS</span>
+
+<div class="viewcode-block" id="Game.move_ball"><a class="viewcode-back" href="../../game.html#bin.game.Game.move_ball">[docs]</a>    <span class="k">def</span> <span class="nf">move_ball</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">old_pos</span><span class="p">,</span> <span class="n">new_pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moves a ball from the old pos to the new_pos</span>
+
+<span class="sd">        :param player: the owner of the ball</span>
+<span class="sd">        :param new_pos: the new position</span>
+<span class="sd">        :param old_pos: the old position</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">player</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">player</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">old_pos</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">player</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_pos</span>
+                <span class="k">break</span></div>
+
+<div class="viewcode-block" id="Game.remove_ball"><a class="viewcode-back" href="../../game.html#bin.game.Game.remove_ball">[docs]</a>    <span class="k">def</span> <span class="nf">remove_ball</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes the specified ball from the game and player&#39;s index</span>
+
+<span class="sd">        :param owner: the owner of the ball</span>
+<span class="sd">        :param pos: the position (x,y) of the ball</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">owner</span><span class="p">])):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pos</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">break</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">owner</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_balls_count</span><span class="p">[</span><span class="n">owner</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">owner</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_red_count</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Game.move"><a class="viewcode-back" href="../../game.html#bin.game.Game.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Moves a ball in the wanted direction if possible.</span>
+<span class="sd">    </span>
+<span class="sd">        :param x: the X coordinate of the ball to move</span>
+<span class="sd">        :param y: the Y coordinate of the ball to move</span>
+<span class="sd">        :param d: The direction of the movement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">up</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">)</span>
+
+        <span class="n">ball_queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ball_chain</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">decal</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ball_queue</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">last_ball_x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">last_ball_y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+            <span class="n">last_ball_x</span> <span class="o">+=</span> <span class="n">decal</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span><span class="p">:</span>
+            <span class="n">last_ball_x</span> <span class="o">-=</span> <span class="n">decal</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span><span class="p">:</span>
+            <span class="n">last_ball_y</span> <span class="o">+=</span> <span class="n">decal</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span><span class="p">:</span>
+            <span class="n">last_ball_y</span> <span class="o">-=</span> <span class="n">decal</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">up</span> <span class="ow">and</span> <span class="n">last_ball_y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">left</span> <span class="ow">and</span> <span class="n">last_ball_x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">right</span> <span class="ow">and</span> <span class="n">last_ball_x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                        <span class="n">d</span> <span class="o">==</span> <span class="n">down</span> <span class="ow">and</span> <span class="n">last_ball_y</span> <span class="o">==</span> <span class="mi">6</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_ball</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="n">last_ball_x</span><span class="p">,</span> <span class="n">last_ball_y</span><span class="p">),</span> <span class="p">(</span><span class="n">last_ball_x</span><span class="p">,</span> <span class="n">last_ball_y</span><span class="p">))</span>
+            <span class="n">ball_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">balls_done</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ball_queue</span><span class="p">)):</span>
+            <span class="n">decal</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ball_queue</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="n">up</span><span class="p">:</span>
+                <span class="n">old_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">decal</span> <span class="o">+</span> <span class="n">balls_done</span><span class="p">)</span>
+                <span class="n">new_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">decal</span> <span class="o">+</span> <span class="n">balls_done</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">down</span><span class="p">:</span>
+                <span class="n">old_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">decal</span> <span class="o">-</span> <span class="n">balls_done</span><span class="p">)</span>
+                <span class="n">new_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">decal</span> <span class="o">-</span> <span class="n">balls_done</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="n">left</span><span class="p">:</span>
+                <span class="n">old_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">decal</span> <span class="o">+</span> <span class="n">balls_done</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">new_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">decal</span> <span class="o">+</span> <span class="n">balls_done</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">old_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">decal</span> <span class="o">-</span> <span class="n">balls_done</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">new_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">decal</span> <span class="o">-</span> <span class="n">balls_done</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+            <span class="n">ball_owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_owner</span><span class="p">(</span><span class="n">old_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">old_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_ball</span><span class="p">(</span><span class="n">ball_owner</span><span class="p">,</span> <span class="n">old_pos</span><span class="p">,</span> <span class="n">new_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_turn</span><span class="p">()</span></div>
+
+    <span class="c1"># Main function</span>
+
+<div class="viewcode-block" id="Game.run"><a class="viewcode-back" href="../../game.html#bin.game.Game.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lets the game run itself until completion</span>
+
+<span class="sd">        :return: the final state of the game</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p1_turn</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_game</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">rs</span><span class="o">.</span><span class="n">has_ended</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">p1_turn</span><span class="p">:</span>
+                <span class="n">mv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_player</span> <span class="o">+</span> <span class="s1">&#39; move is &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mv</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">mv</span> <span class="o">!=</span> <span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">mv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">format_info</span><span class="p">(</span><span class="s2">&quot;No moves possibles&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_game</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">p1_turn</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">p1_turn</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

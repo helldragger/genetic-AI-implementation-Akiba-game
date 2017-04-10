@@ -1,0 +1,84 @@
+The decision making and heuristics
+==================================
+
+* :ref:`The way genetics impacts decision making<how>`
+* :ref:`The heuristics aka the score of a situation<heuristic>`
+* :ref:`The representation of a situation and it's possibilities<nodes>`
+* :ref:`The decision making<negamax>`
+
+.. _how:
+
+How do genetics impacts this AI decision making?
+------------------------------------------------
+
+In this project, each AI have a genome, a sequence of 12 bits which determines the value of 4 variables whose
+values are between 0 and 5, these are the heuristic multipliers. Before diving into the precise and fine details,
+let's zoom out a little bit, at the game-level scope.
+
+Every turn, the game asks the players to decide their moves to continue the game until one of them meets the winning
+conditions or the games runs out of turns (50 turns by default here), when a real player send his next move after
+thoughtful reflexions, a bot player must 'think' about his movement consequences too.
+
+The bot will then:
+
+    1. Lists every possible move.
+
+    2. Explore the consequences of every possible move.
+
+    Repeat until a certain number of forecast moves is calculated.
+
+    3. Determine the best outcome possible.
+
+    4. Return the move going to the the best outcome possible.
+
+Listing every possible move is a basic loop verification, no need to waste time on it, it is explained in it's own
+dedicated docstring below.
+
+Exploring the consequences of every possible moves is a real problem, at the start of the game , on the first
+iteration we have 8 possibilities to explore, on the second we get 8 possibilities for each of the  8 previous
+possibilities so 8*8 possibilities, and at the third we got 11 possibilities then 8*8*11 possibilities et caetera..
+
+No one wants to have to wait 4 minutes between each move to let the AI opponent decides his next move, it would ruin
+the fun. That's why we can then use some optimizations like the alpha beta pruning, implemented below, to reduce
+on-the-fly the amount of possibilities to explore and keep the most interesting ones only.
+
+The interest of a situation will be determined by the heuristics, which is a set of rules based on the game state
+according a certain sum of points accordingly to the positiveness of the situation for the player or negativeness for
+the opponent.
+
+The way to evaluates the interest of a situation in this game is unknown, and we have no way to determine precisely
+and manually the best ratio between the scores to attributes to the different aspects of the game, is eliminating
+red balls more important than the opponent ones? If so, by which order, is this VERY important? Or should we just
+ignore the opponent and focus on the red balls? That's where the AI genome will take effect, by choosing a value of
+importance between all those factors, the heuristics multipliers.
+
+.. _heuristic:
+
+The heuristics
+--------------
+
+.. automodule:: bin.AI.heuristics
+    :members:
+
+.. automodule:: bin.AI.graph.connexity
+    :members:
+
+.. _nodes:
+
+The possibilities as nodes
+--------------------------
+
+.. automodule:: bin.AI.node
+    :members:
+
+.. autoclass:: bin.AI.node.Node
+    :members:
+
+
+.. _negamax:
+
+The negamax with alpha beta pruning decision making
+---------------------------------------------------
+
+.. automodule:: bin.AI.negamax
+    :members:

@@ -1,0 +1,20 @@
+The command-line user interface
+===============================
+
+* :ref:`Command-line input<clinput>`
+* :ref:`Command-line output<cloutput>`
+
+
+.. _clinput:
+
+Command-line input
+------------------
+.. automodule:: bin.input
+    :members:
+
+.. _cloutput:
+
+Command-line output
+-------------------
+.. automodule:: bin.output
+    :members:

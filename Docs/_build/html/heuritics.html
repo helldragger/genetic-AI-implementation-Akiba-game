@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>The decision making and heuristics &#8212; Akiba 1.0 documentation</title>
+
+    <link rel="stylesheet" href="_static/classic.css" type="text/css"/>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css"/>
+
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html"/>
+    <link rel="search" title="Search" href="search.html"/>
+</head>
+<body role="document">
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+               accesskey="I">index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.0 documentation</a> &#187;</li>
+    </ul>
+</div>
+
+<div class="document">
+    <div class="documentwrapper">
+        <div class="bodywrapper">
+            <div class="body" role="main">
+
+                <div class="section" id="the-decision-making-and-heuristics">
+                    <h1>The decision making and heuristics<a class="headerlink"
+                                                             href="#the-decision-making-and-heuristics"
+                                                             title="Permalink to this headline">¶</a></h1>
+                    <ul class="simple">
+                        <li><a class="reference internal" href="#how"><span class="std std-ref">The way genetics impacts decision making</span></a>
+                        </li>
+                        <li><a class="reference internal" href="#heuristic"><span class="std std-ref">The heuristics aka the score of a situation</span></a>
+                        </li>
+                        <li><a class="reference internal" href="#nodes"><span class="std std-ref">The representation of a situation and it&#8217;s possibilities</span></a>
+                        </li>
+                        <li><a class="reference internal" href="#negamax"><span
+                                class="std std-ref">The decision making</span></a></li>
+                    </ul>
+                    <div class="section" id="how-do-genetics-impacts-this-ai-decision-making">
+                        <span id="how"></span>
+                        <h2>How do genetics impacts this AI decision making?<a class="headerlink"
+                                                                               href="#how-do-genetics-impacts-this-ai-decision-making"
+                                                                               title="Permalink to this headline">¶</a>
+                        </h2>
+                        <p>In this project, each AI have a genome, a sequence of 12 bits which determines the value of 4
+                            variables whose
+                            values are between 0 and 5, these are the heuristic multipliers. Before diving into the
+                            precise and fine details,
+                            let&#8217;s zoom out a little bit, at the game-level scope.</p>
+                        <p>Every turn, the game asks the players to decide their moves to continue the game until one of
+                            them meets the winning
+                            conditions or the games runs out of turns (50 turns by default here), when a real player
+                            send his next move after
+                            thoughtful reflexions, a bot player must &#8216;think&#8217; about his movement consequences
+                            too.</p>
+                        <p>The bot will then:</p>
+                        <p>..1. Lists every possible move.
+                            ..2. Explore the consequences of every possible move.
+                            .... Repeat until a certain number of forecast moves is calculated.
+                            ..3. Determine the best outcome possible.
+                            ..4. Return the move going to the the best outcome possible.</p>
+                        <p>Listing every possible move is a basic loop verification, no need to waste time on it, it is
+                            explained in it&#8217;s own
+                            dedicated docstring below.</p>
+                        <p>Exploring the consequences of every possible moves is a real problem, at the start of the
+                            game , on the first
+                            iteration we have 8 possibilities to explore, on the second we get 8 possibilities for each
+                            of the 8 previous
+                            possibilities so 8*8 possibilities, and at the third we got 11 possibilities then 8*8*11
+                            possibilities et caetera..</p>
+                        <p>No one wants to have to wait 4 minutes between each move to let the AI opponent decides his
+                            next move, it would ruin
+                            the fun. That&#8217;s why we can then use some optimizations like the alpha beta pruning,
+                            implemented below, to reduce
+                            on-the-fly the amount of possibilities to explore and keep the most interesting ones
+                            only.</p>
+                        <p>The interest of a situation will be determined by the heuristics, which is a set of rules
+                            based on the game state
+                            according a certain sum of points accordingly to the positiveness of the situation for the
+                            player or negativeness for</p>
+                        <blockquote>
+                            <div>the opponent.</div>
+                        </blockquote>
+                        <p>The way to evaluates the interest of a situation in this game is unknown, and we have no way
+                            to determine precisely
+                            and manually the best ratio between the scores to attributes to the different aspects of the
+                            game, is eliminating
+                            red balls more important than the opponent ones? If so, by which order, is this VERY
+                            important? Or should we just
+                            ignore the opponent and focus on the red balls? That&#8217;s where the AI genome will take
+                            effect, by choosing a value of
+                            importance between all those factors, the heuristics multipliers.</p>
+                    </div>
+                    <div class="section" id="module-bin.AI.genetics">
+                        <span id="the-heuristics"></span><span id="heuristic"></span>
+                        <h2>The heuristics<a class="headerlink" href="#module-bin.AI.genetics"
+                                             title="Permalink to this headline">¶</a></h2>
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.cross_over">
+                                <code class="descclassname">bin.AI.genetics.</code><code
+                                    class="descname">cross_over</code><span class="sig-paren">(</span><em>gen_a</em>,
+                                <em>gen_b</em><span class="sig-paren">)</span><a class="reference internal"
+                                                                                 href="_modules/bin/AI/genetics.html#cross_over"><span
+                                    class="viewcode-link">[source]</span></a><a class="headerlink"
+                                                                                href="#bin.AI.genetics.cross_over"
+                                                                                title="Permalink to this definition">¶</a>
+                            </dt>
+                            <dd><p>Cross over 2 different genetics to create a new genetic</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Parameters:</th>
+                                        <td class="field-body">
+                                            <ul class="first simple">
+                                                <li><strong>gen_a</strong> &#8211; the first parent</li>
+                                                <li><strong>gen_b</strong> &#8211; the second parent</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr class="field-even field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body"><p class="first last">a new genetic</p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.fitness">
+                                <code class="descclassname">bin.AI.genetics.</code><code class="descname">fitness</code><span
+                                    class="sig-paren">(</span><em>bot</em>, <em>game</em><span
+                                    class="sig-paren">)</span><a class="reference internal"
+                                                                 href="_modules/bin/AI/genetics.html#fitness"><span
+                                    class="viewcode-link">[source]</span></a><a class="headerlink"
+                                                                                href="#bin.AI.genetics.fitness"
+                                                                                title="Permalink to this definition">¶</a>
+                            </dt>
+                            <dd><p>Generates a score based on the final state of the game played by the AI</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Parameters:</th>
+                                        <td class="field-body">
+                                            <ul class="first simple">
+                                                <li><strong>bot</strong> &#8211; the AI object</li>
+                                                <li><strong>game</strong> &#8211; the game the AI played in</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr class="field-even field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body"><p class="first last">the fitness score</p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.gen_rand_genome">
+                                <code class="descclassname">bin.AI.genetics.</code><code class="descname">gen_rand_genome</code><span
+                                    class="sig-paren">(</span><span class="sig-paren">)</span><a
+                                    class="reference internal"
+                                    href="_modules/bin/AI/genetics.html#gen_rand_genome"><span class="viewcode-link">[source]</span></a><a
+                                    class="headerlink" href="#bin.AI.genetics.gen_rand_genome"
+                                    title="Permalink to this definition">¶</a></dt>
+                            <dd><p>Generates en whole random gen_string genome</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body">a random genome string</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.int_to_gen_string">
+                                <code class="descclassname">bin.AI.genetics.</code><code class="descname">int_to_gen_string</code><span
+                                    class="sig-paren">(</span><em>nb</em><span class="sig-paren">)</span><a
+                                    class="reference internal"
+                                    href="_modules/bin/AI/genetics.html#int_to_gen_string"><span class="viewcode-link">[source]</span></a><a
+                                    class="headerlink" href="#bin.AI.genetics.int_to_gen_string"
+                                    title="Permalink to this definition">¶</a></dt>
+                            <dd><p>Transcript the genome variable from int to a 3-char binary string</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Parameters:</th>
+                                        <td class="field-body"><strong>nb</strong> &#8211; the number</td>
+                                    </tr>
+                                    <tr class="field-even field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body">the string</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.mutation">
+                                <code class="descclassname">bin.AI.genetics.</code><code
+                                    class="descname">mutation</code><span class="sig-paren">(</span><em>gen_s</em>, <em>mut_rate</em>,
+                                <em>mut_chance</em><span class="sig-paren">)</span><a class="reference internal"
+                                                                                      href="_modules/bin/AI/genetics.html#mutation"><span
+                                    class="viewcode-link">[source]</span></a><a class="headerlink"
+                                                                                href="#bin.AI.genetics.mutation"
+                                                                                title="Permalink to this definition">¶</a>
+                            </dt>
+                            <dd><p>if there is a mutation, the returned genome is mutated with a certain mutation
+                                rate</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Parameters:</th>
+                                        <td class="field-body">
+                                            <ul class="first simple">
+                                                <li><strong>gen_s</strong> &#8211; the source genome</li>
+                                                <li><strong>mut_rate</strong> &#8211; the mutation rate</li>
+                                                <li><strong>mut_chance</strong> &#8211; The mutation chance</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr class="field-even field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body"><p class="first last">the definitive genome</p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.read_genome">
+                                <code class="descclassname">bin.AI.genetics.</code><code
+                                    class="descname">read_genome</code><span class="sig-paren">(</span><em>gen</em><span
+                                    class="sig-paren">)</span><a class="reference internal"
+                                                                 href="_modules/bin/AI/genetics.html#read_genome"><span
+                                    class="viewcode-link">[source]</span></a><a class="headerlink"
+                                                                                href="#bin.AI.genetics.read_genome"
+                                                                                title="Permalink to this definition">¶</a>
+                            </dt>
+                            <dd><p>Transcript from gen_string to a genome dict</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Parameters:</th>
+                                        <td class="field-body"><strong>gen</strong> &#8211; the gen_string genome</td>
+                                    </tr>
+                                    <tr class="field-even field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body">the genome dictionary</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                        <dl class="function">
+                            <dt id="bin.AI.genetics.trans_genome">
+                                <code class="descclassname">bin.AI.genetics.</code><code
+                                    class="descname">trans_genome</code><span
+                                    class="sig-paren">(</span><em>mult_l_red</em>, <em>mult_c_red</em>,
+                                <em>mult_c_adv</em>, <em>mult_ratio</em><span class="sig-paren">)</span><a
+                                    class="reference internal" href="_modules/bin/AI/genetics.html#trans_genome"><span
+                                    class="viewcode-link">[source]</span></a><a class="headerlink"
+                                                                                href="#bin.AI.genetics.trans_genome"
+                                                                                title="Permalink to this definition">¶</a>
+                            </dt>
+                            <dd><p>Transcript multiple multipliers from integers into binary into gen_string</p>
+                                <table class="docutils field-list" frame="void" rules="none">
+                                    <col class="field-name"/>
+                                    <col class="field-body"/>
+                                    <tbody valign="top">
+                                    <tr class="field-odd field">
+                                        <th class="field-name">Parameters:</th>
+                                        <td class="field-body">
+                                            <ul class="first simple">
+                                                <li><strong>mult_l_red</strong> &#8211; heuristic multiplier for the red
+                                                    balls left value
+                                                </li>
+                                                <li><strong>mult_c_red</strong> &#8211; heuristic multiplier for the red
+                                                    balls elimination value
+                                                </li>
+                                                <li><strong>mult_c_adv</strong> &#8211; heuristic multiplier for the
+                                                    adverse balls elimination value
+                                                </li>
+                                                <li><strong>mult_ratio</strong> &#8211; heuristic multiplier for the
+                                                    balls ratio value
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr class="field-even field">
+                                        <th class="field-name">Returns:</th>
+                                        <td class="field-body"><p class="first last">a gen_string genome</p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+
+                    </div>
+                    <div class="section" id="module-bin.AI.node">
+                        <span id="the-possibilities-as-nodes"></span><span id="nodes"></span>
+                        <h2>The possibilities as nodes<a class="headerlink" href="#module-bin.AI.node"
+                                                         title="Permalink to this headline">¶</a></h2>
+                        <p>This class represents a node, a possibility in the move decision tree search.</p>
+                    </div>
+                    <div class="section" id="the-negamax-with-alpha-beta-pruning-decision-making">
+                        <span id="negamax"></span>
+                        <h2>The negamax with alpha beta pruning decision making<a class="headerlink"
+                                                                                  href="#the-negamax-with-alpha-beta-pruning-decision-making"
+                                                                                  title="Permalink to this headline">¶</a>
+                        </h2>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+                <li><a class="reference internal" href="#">The decision making and heuristics</a>
+                    <ul>
+                        <li><a class="reference internal" href="#how-do-genetics-impacts-this-ai-decision-making">How do
+                            genetics impacts this AI decision making?</a></li>
+                        <li><a class="reference internal" href="#module-bin.AI.genetics">The heuristics</a></li>
+                        <li><a class="reference internal" href="#module-bin.AI.node">The possibilities as nodes</a></li>
+                        <li><a class="reference internal" href="#the-negamax-with-alpha-beta-pruning-decision-making">The
+                            negamax with alpha beta pruning decision making</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div role="note" aria-label="source link">
+                <h3>This Page</h3>
+                <ul class="this-page-menu">
+                    <li><a href="_sources/heuritics.rst.txt"
+                           rel="nofollow">Show Source</a></li>
+                </ul>
+            </div>
+            <div id="searchbox" style="display: none" role="search">
+                <h3>Quick search</h3>
+                <form class="search" action="search.html" method="get">
+                    <div><input type="text" name="q"/></div>
+                    <div><input type="submit" value="Go"/></div>
+                    <input type="hidden" name="check_keywords" value="yes"/>
+                    <input type="hidden" name="area" value="default"/>
+                </form>
+            </div>
+            <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+    </div>
+    <div class="clearer"></div>
+</div>
+<div class="related" role="navigation" aria-label="related navigation">
+    <h3>Navigation</h3>
+    <ul>
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index"
+            >index</a></li>
+        <li class="right">
+            <a href="py-modindex.html" title="Python Module Index"
+            >modules</a> |
+        </li>
+        <li class="nav-item nav-item-0"><a href="index.html">Akiba 1.0 documentation</a> &#187;</li>
+    </ul>
+</div>
+<div class="footer" role="contentinfo">
+    &#169; Copyright 2017, JACQUIOT Christopher.
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+</div>
+</body>
+</html>

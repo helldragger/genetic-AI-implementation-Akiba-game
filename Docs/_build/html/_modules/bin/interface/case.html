@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.interface.case &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.interface.case</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+
+<span class="kn">import</span> <span class="nn">bin.interface.background</span> <span class="k">as</span> <span class="nn">bg</span>
+<span class="kn">import</span> <span class="nn">bin.ruleset</span> <span class="k">as</span> <span class="nn">rs</span>
+
+
+<div class="viewcode-block" id="Case"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case">[docs]</a><span class="k">class</span> <span class="nc">Case</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The case canvas, the canvas instantiated in each plateau&#39;s case</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span> <span class="o">=</span> <span class="n">master</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="o">=</span> <span class="n">owner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+            <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+            <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+            <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="Case.get_current_ball_bg"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.get_current_ball_bg">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_ball_bg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns it&#39;s ball based on it&#39;s current owner</span>
+
+<span class="sd">        :return: an ball to display based on it&#39;s current owner</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">bg</span><span class="o">.</span><span class="n">ball_n</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">bg</span><span class="o">.</span><span class="n">ball_r</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="o">==</span> <span class="s1">&#39;p2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">bg</span><span class="o">.</span><span class="n">ball_b</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="o">==</span> <span class="s1">&#39;p1&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">bg</span><span class="o">.</span><span class="n">ball_w</span></div>
+
+<div class="viewcode-block" id="Case.set_selector_state"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.set_selector_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_selector_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the state of the specified direction selector.</span>
+
+<span class="sd">        :param d: the direction of the selector</span>
+<span class="sd">        :param state: the state of said selector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">d</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span></div>
+
+<div class="viewcode-block" id="Case.get_selector_state"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.get_selector_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_selector_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the desired direction selectors state</span>
+
+<span class="sd">        :param direction: the direction of said selector</span>
+<span class="sd">        :return: the state of the desired selector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">direction</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Case.get_selector_bg"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.get_selector_bg">[docs]</a>    <span class="k">def</span> <span class="nf">get_selector_bg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns it&#39;s background based on it&#39;s current state</span>
+
+<span class="sd">        :return: an image to display based on it&#39;s current state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">bg</span><span class="o">.</span><span class="n">get_selector_image</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bg</span><span class="o">.</span><span class="n">get_selector_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_selector_state</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Case.set_owner"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.set_owner">[docs]</a>    <span class="k">def</span> <span class="nf">set_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets the current owner with the new owner</span>
+
+<span class="sd">        :param owner: the new owner</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="o">=</span> <span class="n">owner</span></div>
+
+<div class="viewcode-block" id="Case.get_owner"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.get_owner">[docs]</a>    <span class="k">def</span> <span class="nf">get_owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return the current owner</span>
+
+<span class="sd">        :return: the current owner</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span></div>
+
+<div class="viewcode-block" id="Case.update"><a class="viewcode-back" href="../../../gui.html#bin.interface.case.Case.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the Case Layer content display</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__owner</span> <span class="o">==</span> <span class="s1">&#39;red&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_selector_state</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inv_dir</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">rs</span><span class="o">.</span><span class="n">can_move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">game</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">who_plays</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">who_plays</span><span class="p">())</span><span class="o">.</span><span class="n">get_last_moves</span><span class="p">()):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_selector_state</span><span class="p">(</span><span class="n">inv_dir</span><span class="p">[</span><span class="n">direction</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_selector_state</span><span class="p">(</span><span class="n">inv_dir</span><span class="p">[</span><span class="n">direction</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">bg</span><span class="o">.</span><span class="n">case</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_current_ball_bg</span><span class="p">())</span>
+
+        <span class="n">up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_selector_bg</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">)</span>
+        <span class="n">down</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_selector_bg</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_selector_bg</span><span class="p">(</span><span class="s1">&#39;l&#39;</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_selector_bg</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">8</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">up</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">8</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">24</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">32</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">8</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnv</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">24</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">+</span> <span class="mi">8</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">tk</span><span class="o">.</span><span class="n">NW</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">right</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

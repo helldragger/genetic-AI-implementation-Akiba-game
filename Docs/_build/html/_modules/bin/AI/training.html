@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.AI.training &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.AI.training</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The AI training module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">bin.AI.bot</span> <span class="k">as</span> <span class="nn">bot</span>
+<span class="kn">import</span> <span class="nn">bin.AI.genetics</span> <span class="k">as</span> <span class="nn">gene</span>
+<span class="kn">import</span> <span class="nn">bin.database.genobase</span> <span class="k">as</span> <span class="nn">gb</span>
+<span class="kn">import</span> <span class="nn">bin.game</span> <span class="k">as</span> <span class="nn">g</span>
+<span class="kn">import</span> <span class="nn">bin.output</span> <span class="k">as</span> <span class="nn">o</span>
+
+
+<div class="viewcode-block" id="generate_pop"><a class="viewcode-back" href="../../../training.html#bin.AI.training.generate_pop">[docs]</a><span class="k">def</span> <span class="nf">generate_pop</span><span class="p">(</span><span class="n">current_pop</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fill the current population to the determined size with fully random individuals</span>
+
+<span class="sd">    :param current_pop: the current population queue</span>
+<span class="sd">    :param size: the current population queue size</span>
+<span class="sd">    :return: the completed list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_pop</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="n">current_size</span><span class="p">):</span>
+        <span class="n">rand_genetic</span> <span class="o">=</span> <span class="n">gene</span><span class="o">.</span><span class="n">gen_rand_genome</span><span class="p">()</span>
+        <span class="n">current_pop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">AI</span><span class="p">(</span><span class="n">gen</span><span class="o">=</span><span class="n">rand_genetic</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">current_pop</span></div>
+
+
+<div class="viewcode-block" id="generate_games"><a class="viewcode-back" href="../../../training.html#bin.AI.training.generate_games">[docs]</a><span class="k">def</span> <span class="nf">generate_games</span><span class="p">(</span><span class="n">pop</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a tournament for every individual to battle against every others</span>
+
+<span class="sd">    :param pop: the population</span>
+<span class="sd">    :return: the game list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">games_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pop</span><span class="p">)):</span>
+            <span class="n">game</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">Game</span><span class="p">(</span><span class="n">p1</span><span class="o">=</span><span class="n">pop</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">p2</span><span class="o">=</span><span class="n">pop</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">games_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">games_list</span></div>
+
+
+<div class="viewcode-block" id="selection"><a class="viewcode-back" href="../../../training.html#bin.AI.training.selection">[docs]</a><span class="k">def</span> <span class="nf">selection</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">scores</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the best players with the simple medium strategy</span>
+
+<span class="sd">    :param population: the players</span>
+<span class="sd">    :param scores: the scores of every players</span>
+<span class="sd">    :return: the 2 best players</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">players_medium_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># players medium score determination</span>
+    <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">population</span><span class="p">:</span>
+        <span class="n">p_scores</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">player</span><span class="p">]</span>
+        <span class="n">p_medium_score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">p_scores</span><span class="p">:</span>
+            <span class="n">p_medium_score</span> <span class="o">+=</span> <span class="n">score</span>
+        <span class="n">p_medium_score</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p_scores</span><span class="p">)</span>
+        <span class="n">players_medium_scores</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">player</span><span class="p">,</span> <span class="n">p_medium_score</span><span class="p">))</span>
+    <span class="c1"># best 2 scores determination</span>
+    <span class="n">first_player</span><span class="p">,</span> <span class="n">first_score</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">999999</span><span class="p">)</span>
+    <span class="n">second_player</span><span class="p">,</span> <span class="n">second_score</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">999999</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">med_score</span> <span class="ow">in</span> <span class="n">players_medium_scores</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">med_score</span> <span class="o">&gt;</span> <span class="n">first_score</span> <span class="ow">or</span> <span class="n">first_score</span> <span class="o">==</span> <span class="o">-</span><span class="mi">999999</span><span class="p">:</span>
+            <span class="n">second_player</span> <span class="o">=</span> <span class="n">first_player</span>
+            <span class="n">second_score</span> <span class="o">=</span> <span class="n">first_score</span>
+            <span class="n">first_score</span> <span class="o">=</span> <span class="n">med_score</span>
+            <span class="n">first_player</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="k">elif</span> <span class="n">med_score</span> <span class="o">&gt;</span> <span class="n">second_score</span> <span class="ow">or</span> <span class="n">second_score</span> <span class="o">==</span> <span class="o">-</span><span class="mi">999999</span><span class="p">:</span>
+            <span class="n">second_score</span> <span class="o">=</span> <span class="n">med_score</span>
+            <span class="n">second_player</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">first_player</span><span class="p">,</span> <span class="n">second_player</span><span class="p">],</span> <span class="p">[</span><span class="n">first_score</span><span class="p">,</span> <span class="n">second_score</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="session"><a class="viewcode-back" href="../../../training.html#bin.AI.training.session">[docs]</a><span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">max_pop</span><span class="p">,</span> <span class="n">graphs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Operates a full session from a certain population or not.</span>
+
+<span class="sd">    ..#. Generates population</span>
+<span class="sd">    ..#. Generate games with generated population</span>
+<span class="sd">    ..#. Run every games</span>
+<span class="sd">    ..#. When every game has finished: get every player score</span>
+<span class="sd">    ..#. Epurate the population to keep the best of them</span>
+
+<span class="sd">    :param parents: the former population if any</span>
+<span class="sd">    :return: the best players of the current session</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pop_size</span> <span class="o">=</span> <span class="n">max_pop</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Generate population</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">parents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_pop</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too much population&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+            <span class="n">pop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="n">generate_pop</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">pop_size</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">pop</span><span class="p">:</span>
+        <span class="n">scores</span><span class="p">[</span><span class="n">player</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Generate games</span>
+    <span class="n">games</span> <span class="o">=</span> <span class="n">generate_games</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+    <span class="c1"># Run every games until finished and then get scores</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">total_games</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">games</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">game</span> <span class="ow">in</span> <span class="n">games</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Current game analysis: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> / </span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">total_games</span><span class="p">))</span>
+        <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_player</span><span class="p">(</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+        <span class="n">p1</span><span class="o">.</span><span class="n">calculate_score</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+        <span class="n">p2</span><span class="o">.</span><span class="n">calculate_score</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+        <span class="n">scores</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p1</span><span class="o">.</span><span class="n">get_score</span><span class="p">())</span>
+        <span class="n">scores</span><span class="p">[</span><span class="n">p2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2</span><span class="o">.</span><span class="n">get_score</span><span class="p">())</span>
+    <span class="c1"># Manipulate some data for the sake of graphics (mmh dope graphics! &lt;3) (min, max, mean, etc...)</span>
+    <span class="k">if</span> <span class="n">graphs</span><span class="p">:</span>
+        <span class="n">foo</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+    <span class="c1"># Epurate generation</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">selection</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+<span class="k">class</span> <span class="nc">Training</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_pop</span><span class="p">,</span> <span class="n">nb_iterations</span><span class="p">,</span> <span class="n">graphs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">p1_gen</span><span class="p">,</span> <span class="n">p2_gen</span><span class="p">):</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">p1_gen</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">AI</span><span class="p">(</span><span class="n">gen</span><span class="o">=</span><span class="n">p1_gen</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">p2_gen</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">AI</span><span class="p">(</span><span class="n">gen</span><span class="o">=</span><span class="n">p2_gen</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">nb_iterations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">gen</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span><span class="s1">&#39;Current generation: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">session</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">max_pop</span><span class="p">,</span> <span class="n">graphs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+                <span class="n">gb</span><span class="o">.</span><span class="n">dump_generations</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">max_pop</span><span class="p">,</span> <span class="n">nb_iterations</span><span class="p">,</span> <span class="n">gen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">parents</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">gen</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">gen</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_iterations</span><span class="p">):</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span><span class="s1">&#39;Current generation: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">gen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">session</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">max_pop</span><span class="p">,</span> <span class="n">graphs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+                <span class="n">gb</span><span class="o">.</span><span class="n">dump_generations</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">max_pop</span><span class="p">,</span> <span class="n">nb_iterations</span><span class="p">,</span> <span class="n">gen</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">parents</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

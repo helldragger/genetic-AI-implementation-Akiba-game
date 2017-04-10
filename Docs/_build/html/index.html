@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The akiba’s game documentation &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The akiba game implementation" href="game.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="game.html" title="The akiba game implementation"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-akiba-s-game-documentation">
+<h1>The akiba&#8217;s game documentation<a class="headerlink" href="#the-akiba-s-game-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Table of Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="game.html">The akiba game implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="game.html#module-bin.game">The main loop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="game.html#the-game-mechanics">The game mechanics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html">The rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modes.html">The main modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modes.html#the-mode-selection">The mode selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modes.html#module-bin.akibo">The command-line mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modes.html#module-bin.akibo">The Graphical User Interface mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modes.html#module-bin.akibo">The training mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">The command-line user interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="commandline.html#module-bin.input">Command-line input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commandline.html#module-bin.output">Command-line output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">The Graphical User Interface (GUI)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#module-bin.gui">The main window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#module-bin.interface.background">The background loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#module-bin.interface.command">The Command frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#module-bin.interface.scoreboard">The Scoreboard frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#module-bin.interface.plateau">The main Game canvas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html#module-bin.interface.case">The main Game case</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="training.html">The population training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genetic.html">A genetic algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="genetic.html#why-using-a-genetic-algorithm-and-not-a-neural-network">Why using a genetic algorithm and not a neural network?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="genetic.html#module-bin.AI.genetics">The genetic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="genetic.html#module-bin.database.genobase">The genetic database</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="heuristics.html">The decision making and heuristics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heuristics.html#how-do-genetics-impacts-this-ai-decision-making">How do genetics impacts this AI decision making?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics.html#module-bin.AI.heuristics">The heuristics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics.html#module-bin.AI.node">The possibilities as nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heuristics.html#module-bin.AI.negamax">The negamax with alpha beta pruning decision making</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bot.html">The players classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bot.html#module-bin.player">The player class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bot.html#module-bin.AI.bot">The AI subclass</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Ce projet a été réalisé par JACQUIOT Christopher, élève de première année de licence informatique à l&#8217;université de
+Caen, dans le cadre d&#8217;un examen de fin d&#8217;année 2016-2017.</p>
+<p>Ce projet consiste en la réalisation d&#8217;un jeu vidéo simple choisi parmi deux sujets présentés. La note qui en
+découlera sera en grande partie attribuée aux améliorations ajoutées au projet de base.</p>
+<p>Le sujet choisi pour ce sujet a été le jeu d&#8217;akiba, une sorte de jeu de Abalone se deroulant sur un plateau carré de
+7 cases sur 7 cases, où chaque jour va se voir attribuer 8 boules noires ou blanches réparties dans deux coins
+opposés de ce plateau. Au centre de ce plateau se trouvent 13 boules rouges réparties de manière symétrique,
+n&#8217;appartenant à aucun des deux joueurs.</p>
+<p>Le but du jeu est d&#8217;éliminer 6 boules rouges en premier ou de décimer l&#8217;intégralité des boules du joueur adverse en
+respectant des regles de déplacement précises:</p>
+<p>Pour pousser une de ses boules dans une direction, le joueur doit avoir une case de libre derriere la boule pour
+pouvoir poser son doigt.</p>
+<p>Un joueur ne peux pas essayer de faire la mouvement inverse du dernier coup de son adversaire, pour ne pas bloquer
+indéfiniment le jeu</p>
+<p>Un joueur ne peux pas faire tomber une de ses boules du plateau volontairement.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Next topic</h4>
+  <p class="topless"><a href="game.html"
+                        title="next chapter">The akiba game implementation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="game.html" title="The akiba game implementation"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Akiba 1.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

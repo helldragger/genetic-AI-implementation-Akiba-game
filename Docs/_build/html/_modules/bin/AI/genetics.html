@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bin.AI.genetics &#8212; Akiba 1.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for bin.AI.genetics</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">rand</span>
+
+<span class="kn">import</span> <span class="nn">bin.ruleset</span> <span class="k">as</span> <span class="nn">rs</span>
+<span class="n">_gene_length</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">_gene_max</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">_gene_length</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">_gene_names</span> <span class="o">=</span>  <span class="p">(</span><span class="s1">&#39;distance&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;pla balls left&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;adv balls left&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;pla red balls&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;adv red balls&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;pla group left&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;adv group left&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;can elim red&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;can elim adv&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;last adv&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;balls ratio&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;group ratio&#39;</span><span class="p">)</span>
+<span class="n">_gene_quantity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_gene_names</span><span class="p">)</span>
+<span class="n">_mutation_rate</span> <span class="o">=</span> <span class="mi">5</span><span class="o">/</span><span class="p">(</span><span class="n">_gene_length</span><span class="o">*</span><span class="n">_gene_quantity</span><span class="p">)</span>
+<span class="n">_mutation_chance</span> <span class="o">=</span> <span class="mi">75</span><span class="o">/</span><span class="mi">100</span>
+
+
+<div class="viewcode-block" id="int_to_gen_string"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.int_to_gen_string">[docs]</a><span class="k">def</span> <span class="nf">int_to_gen_string</span><span class="p">(</span><span class="n">nb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transcript the genome variable from int to a 3-char binary string</span>
+
+<span class="sd">    :param nb: the number</span>
+<span class="sd">    :return: the string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nb</span> <span class="o">&gt;</span> <span class="n">_gene_max</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;multiplier above 31&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">nb</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;multiplier under 0&#39;</span><span class="p">)</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;0&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">_gene_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])),</span> <span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]])</span>
+    <span class="k">return</span> <span class="n">string</span></div>
+
+
+<div class="viewcode-block" id="fitness"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.fitness">[docs]</a><span class="k">def</span> <span class="nf">fitness</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="n">game</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a score based on the final state of the game played by the AI</span>
+
+<span class="sd">    :param bot: the AI object</span>
+<span class="sd">    :param game: the game the AI played in</span>
+<span class="sd">    :return: the fitness score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">which_player</span><span class="p">()</span>
+    <span class="n">adv</span> <span class="o">=</span> <span class="s1">&#39;p2&#39;</span> <span class="k">if</span> <span class="n">bot</span><span class="o">.</span><span class="n">which_player</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;p1&#39;</span> <span class="k">else</span> <span class="s1">&#39;p1&#39;</span>
+    <span class="c1"># Score who won</span>
+
+    <span class="n">winner</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">who_won</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">winner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="mi">15</span>
+    <span class="k">elif</span> <span class="n">winner</span> <span class="o">==</span> <span class="n">bot</span><span class="o">.</span><span class="n">get_name</span><span class="p">():</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="mi">30</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="mi">0</span>
+
+    <span class="c1"># Score TIME</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="mi">50</span> <span class="o">/</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">get_turn_count</span><span class="p">()</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># Score total elimination</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="mi">10</span> <span class="o">/</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="n">adv</span><span class="p">)</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">-</span> <span class="n">game</span><span class="o">.</span><span class="n">red_balls_count</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Score total resistance</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">player_balls_left</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">score</span></div>
+
+
+<div class="viewcode-block" id="cross_over"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.cross_over">[docs]</a><span class="k">def</span> <span class="nf">cross_over</span><span class="p">(</span><span class="n">gen_a</span><span class="p">,</span> <span class="n">gen_b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cross over 2 different genetics to create a new genetic</span>
+
+<span class="sd">    :param gen_a: the first parent</span>
+<span class="sd">    :param gen_b: the second parent</span>
+<span class="sd">    :return: a new genetic</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gen_c</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gen_a</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">gen_c</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">gen_c</span><span class="p">,</span> <span class="n">gen_a</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gen_c</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">gen_c</span><span class="p">,</span> <span class="n">gen_b</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">gen_c</span></div>
+
+
+<div class="viewcode-block" id="mutation"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.mutation">[docs]</a><span class="k">def</span> <span class="nf">mutation</span><span class="p">(</span><span class="n">gen_s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    if there is a mutation, the returned genome is mutated with a certain mutation rate</span>
+
+<span class="sd">    :param gen_s: the source genome</span>
+<span class="sd">    :return: the definitive genome</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">rand</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_mutation_chance</span><span class="o">*</span><span class="mi">100</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gen_s</span>
+    <span class="n">gen_m</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gen_s</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">rand</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">_mutation_rate</span><span class="o">*</span><span class="mi">100</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gen_s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                <span class="n">gen_m</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">gen_m</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gen_m</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">gen_m</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gen_m</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">gen_m</span><span class="p">,</span> <span class="n">gen_s</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">gen_m</span></div>
+
+
+<div class="viewcode-block" id="trans_genome"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.trans_genome">[docs]</a><span class="k">def</span> <span class="nf">trans_genome</span><span class="p">(</span><span class="n">multipliers</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transcript multiple multipliers from integers into binary into gen_string</span>
+
+<span class="sd">    multipliers:</span>
+<span class="sd">    </span>
+<span class="sd">      - mult_ratio_groups: heuristic multiplier for the ratio between player&#39;s and adverse&#39;s groups</span>
+<span class="sd">      - mult_ratio_balls: heuristic multiplier for the ratio between player&#39;s and adverse&#39;s balls</span>
+<span class="sd">      - mult_last_pla: heuristic multiplier for the fact there is only one player ball left</span>
+<span class="sd">      - mult_last_adv: heuristic multiplier for the fact there is only one adverse ball left</span>
+<span class="sd">      - mult_last_red: heuristic multiplier for the fact there is only one red ball left</span>
+<span class="sd">      - mult_can_elim_adv: heuristic multiplier for the possibility to eliminate adverse balls</span>
+<span class="sd">      - mult_can_elim_red: heuristic multiplier for the possibility to eliminate red balls</span>
+<span class="sd">      - mult_red_groups: heuristic multiplier for the red groups left value</span>
+<span class="sd">      - mult_adv_groups: heuristic multiplier for the adverse groups left value</span>
+<span class="sd">      - mult_pla_groups: heuristic multiplier for the player groups left value</span>
+<span class="sd">      - mult_adv_red: heuristic multiplier for the red balls eliminated by the adverse</span>
+<span class="sd">      - mult_pla_red: heuristic multiplier for the red balls eliminated by the player</span>
+<span class="sd">      - mult_adv_left: heuristic multiplier for the adverse balls left value</span>
+<span class="sd">      - mult_pla_left: heuristic multiplier for the player balls left value</span>
+<span class="sd">      - mult_dist: heuristic multiplier for the mean distance between the balls and the center of the game</span>
+
+<span class="sd">    :return: a gen_string genome</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">genome</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">multipliers</span><span class="p">:</span>
+        <span class="n">genome</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">genome</span><span class="p">,</span> <span class="n">int_to_gen_string</span><span class="p">(</span><span class="n">value</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">genome</span></div>
+
+
+<div class="viewcode-block" id="read_genome"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.read_genome">[docs]</a><span class="k">def</span> <span class="nf">read_genome</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transcript from gen_string to a genome dict</span>
+
+<span class="sd">    :param gen: the gen_string genome</span>
+<span class="sd">    :return: the genome dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">genome</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gen</span><span class="p">),</span> <span class="n">_gene_length</span><span class="p">):</span>
+        <span class="n">genome</span><span class="p">[</span><span class="n">_gene_names</span><span class="p">[</span><span class="n">i</span><span class="o">//</span><span class="n">_gene_length</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">gen</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">_gene_length</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">genome</span></div>
+
+
+<div class="viewcode-block" id="gen_rand_genome"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.gen_rand_genome">[docs]</a><span class="k">def</span> <span class="nf">gen_rand_genome</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a whole random gen_string genome</span>
+
+<span class="sd">    :return: a random genome string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_gene_quantity</span><span class="p">):</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rand</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_gene_max</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">trans_genome</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_max_genome_length"><a class="viewcode-back" href="../../../genetic.html#bin.AI.genetics.get_max_genome_length">[docs]</a><span class="k">def</span> <span class="nf">get_max_genome_length</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :return: The total size of a genome</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_gene_length</span> <span class="o">*</span> <span class="n">_gene_quantity</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Akiba 1.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, JACQUIOT Christopher.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>
