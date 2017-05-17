@@ -80,9 +80,9 @@ def cross_over(gen_a, gen_b):
     gen_c = ''
     for i in range(len(gen_a)):
         if (-1) ** i == 1:
-            gen_c == ''.join([gen_c, gen_a[i]])
+            gen_c = ''.join([gen_c, gen_a[i]])
         else:
-            gen_c == ''.join([gen_c, gen_b[i]])
+            gen_c = ''.join([gen_c, gen_b[i]])
     return gen_c
 
 

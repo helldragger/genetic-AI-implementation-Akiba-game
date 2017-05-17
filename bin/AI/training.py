@@ -17,7 +17,7 @@ def generate_pop(current_pop, size):
     :return: the completed list
     """
     current_size = len(current_pop)
-    for i in range(size - current_size):
+    for _ in range(size - current_size):
         rand_genetic = gene.gen_rand_genome()
         current_pop.append(bot.AI(gen=rand_genetic))
     return current_pop
@@ -112,8 +112,8 @@ def session(parents, max_pop, graphs, verbose):
         scores[p1].append(p1.get_score())
         scores[p2].append(p2.get_score())
     # Manipulate some data for the sake of graphics (mmh dope graphics! <3) (min, max, mean, etc...)
-    if graphs:
-        foo = 'bar'
+    # if graphs:
+    #     foo = 'bar'
     # Epurate generation
     results = selection(pop, scores)
     return results

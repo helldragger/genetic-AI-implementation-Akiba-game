@@ -15,6 +15,7 @@ class GameSettings(tk.LabelFrame):
         self.master = master
         self.result = ''
         self.ia_or_not = tk.BooleanVar()
+        self.ia_or_not.set(False)
         self.but__ia_or_not = tk.Checkbutton(master,
                                              text="Against IA",
                                              variable=self.ia_or_not,
@@ -86,5 +87,5 @@ class GameSettings(tk.LabelFrame):
         """
         Sets the final configuration into the args format used by the main program
         """
-        self.result = (self.ia_or_not, self.ia_genome if self.ia_or_not else '')
+        self.result = (self.ia_or_not.get(), self.ia_genome if self.ia_or_not.get() else '')
         self.master.destroy()

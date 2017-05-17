@@ -217,7 +217,7 @@ class Game:
                     chain.append('red')
                 else:
                     break
-        else:
+        elif d == left:
             for x in range(x, -1, -1):
                 if (x, y) in self._data['p1']:
                     chain.append('p1')
